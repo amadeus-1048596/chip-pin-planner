@@ -1758,26 +1758,18 @@ t("CH582F：I2C / UART3 映射组语义正确移除", () => {
 
 console.log("\n=== v1.8-4 / M2: 芯片对账 ===");
 
-t("清单：十颗芯片按 M→F→583M→584M→584X→584F→585M→585F→585C→585D 顺序全部可用、id 唯一", () => {
-  const defs = [
-    require("../chips/wch-ch582m-qfn48.js"),
-    require("../chips/wch-ch582f-qfn28.js"),
-    require("../chips/wch-ch583m-qfn48.js"),
-    require("../chips/wch-ch584m-qfn48.js"),
-    require("../chips/wch-ch584x-qfn48.js"),
-    require("../chips/wch-ch584f-qfn32.js"),
-    require("../chips/wch-ch585m-qfn48.js"),
-    require("../chips/wch-ch585f-qfn32.js"),
-    require("../chips/wch-ch585c-qfn26c3.js"),
-    require("../chips/wch-ch585d-qfn20.js")
-  ];
+t("清单：17 颗芯片按 manifest 顺序全部可用、id 唯一", () => {
+  const fs = require("fs");
+  const src = fs.readFileSync(__dirname + "/../chips/manifest.js", "utf8");
+  const files = (src.match(/"([^"]+)"/g) || []).map(s => s.slice(1, -1));
+  assert.strictEqual(files.length, 17);
+  const defs = files.map(f => require(__dirname + "/../" + f));
   const chips = Loader.buildChips(defs.map((d, i) => ({ file: "chips/x" + i + ".js", def: d })), Model);
-  assert.deepStrictEqual(chips.map(c => c.ok), [true, true, true, true, true, true, true, true, true, true], JSON.stringify(chips.map(c => c.reason)));
-  assert.deepStrictEqual(chips.map(c => c.chipId), ["ch582m-qfn48", "ch582f-qfn28", "ch583m-qfn48", "ch584m-qfn48", "ch584x-qfn48", "ch584f-qfn32", "ch585m-qfn48", "ch585f-qfn32", "ch585c-qfn26c3", "ch585d-qfn20"]);
-  assert.deepStrictEqual(chips.map(c => c.def.chip.name), ["CH582M", "CH582F", "CH583M", "CH584M", "CH584X", "CH584F", "CH585M", "CH585F", "CH585C", "CH585D"]);
+  assert.ok(chips.every(c => c.ok), JSON.stringify(chips.map(c => c.reason)));
+  assert.strictEqual(new Set(chips.map(c => c.chipId)).size, 17);
 });
 
-t("manifest：十份数据文件按清单顺序，文件均存在", () => {
+t("manifest：17 份数据文件按清单顺序，文件均存在", () => {
   const fs = require("fs");
   const src = fs.readFileSync(__dirname + "/../chips/manifest.js", "utf8");
   const m = src.match(/\[([^\]]*)\]/);
@@ -1793,7 +1785,14 @@ t("manifest：十份数据文件按清单顺序，文件均存在", () => {
     "chips/wch-ch585m-qfn48.js",
     "chips/wch-ch585f-qfn32.js",
     "chips/wch-ch585c-qfn26c3.js",
-    "chips/wch-ch585d-qfn20.js"
+    "chips/wch-ch585d-qfn20.js",
+    "chips/wch-ch592x-qfn32.js",
+    "chips/wch-ch592f-qfn28.js",
+    "chips/wch-ch592a-qfn28.js",
+    "chips/wch-ch592d-qfn20.js",
+    "chips/wch-ch591f-qfn28.js",
+    "chips/wch-ch591d-qfn20.js",
+    "chips/wch-ch591r-tssop16.js"
   ]);
   files.forEach(f => assert.ok(fs.existsSync(__dirname + "/../" + f), f + " 应存在"));
 });
@@ -1981,6 +1980,91 @@ t("CH585D：validateChip 通过，20+EP 脚，12 IO，quad 5/边 pin1 左下", (
   assert.strictEqual(CHIP585D.resources.filter(r => r.category === "PWM").length, 3);
   assert.strictEqual(CHIP585D.resources.filter(r => r.category === "ADC").length, 5);
   assert.deepStrictEqual(CHIP585D.globalConfigs.map(c => c.id), ["debug"]);
+});
+
+console.log("\n=== M3: CH592 / CH591 ===");
+const CHIP592X = require("../chips/wch-ch592x-qfn32.js");
+const CHIP592F = require("../chips/wch-ch592f-qfn28.js");
+const CHIP592A = require("../chips/wch-ch592a-qfn28.js");
+const CHIP592D = require("../chips/wch-ch592d-qfn20.js");
+const CHIP591F = require("../chips/wch-ch591f-qfn28.js");
+const CHIP591D = require("../chips/wch-ch591d-qfn20.js");
+const CHIP591R = require("../chips/wch-ch591r-tssop16.js");
+
+t("CH592X：validateChip 通过，33 脚，24 IO，CH59x，pin1 左下", () => {
+  assert.strictEqual(CHIP592X.id, "ch592x-qfn32");
+  assert.strictEqual(CHIP592X.chip.name, "CH592X");
+  assert.strictEqual(CHIP592X.chip.series, "CH59x");
+  assert.strictEqual(CHIP592X.package.pin1, "bottomLeft");
+  assert.strictEqual(CHIP592X.pins.length, 33);
+  const v = Model.validateChip(CHIP592X);
+  assert.strictEqual(v.ok, true, JSON.stringify(v.errors));
+  assert.strictEqual(Avail.countIO(CHIP592X, Avail.defaultState(CHIP592X)).total, 24);
+  assert.strictEqual(CHIP592X.resources.filter(r => r.category === "ADC").length, 12);
+  assert.strictEqual(CHIP592X.resources.find(r => r.id === "LCD").optional.length, 20);
+});
+
+t("CH592F/A：QFN28，20 IO，8 路 ADC，LCD 16 SEG", () => {
+  for (const d of [CHIP592F, CHIP592A]) {
+    assert.strictEqual(d.package.family, "quad");
+    assert.strictEqual(d.package.pinsPerSide, 7);
+    assert.strictEqual(d.pins.length, 29);
+    assert.strictEqual(Model.validateChip(d).ok, true, JSON.stringify(Model.validateChip(d).errors));
+    assert.strictEqual(Avail.countIO(d, Avail.defaultState(d)).total, 20);
+    assert.strictEqual(d.resources.filter(r => r.category === "ADC").length, 8);
+    assert.strictEqual(d.resources.find(r => r.id === "LCD").optional.length, 16);
+  }
+});
+
+t("CH592D：QFN20，12 IO，2 UART，TMR1/TMR2，4 路 ADC，LCD 8 SEG", () => {
+  assert.strictEqual(CHIP592D.chip.name, "CH592D");
+  assert.strictEqual(CHIP592D.pins.length, 21);
+  assert.strictEqual(Model.validateChip(CHIP592D).ok, true, JSON.stringify(Model.validateChip(CHIP592D).errors));
+  assert.strictEqual(Avail.countIO(CHIP592D, Avail.defaultState(CHIP592D)).total, 12);
+  const ids = CHIP592D.resources.map(r => r.id);
+  ["UART0", "UART1", "TMR1", "TMR2", "I2C", "USB", "LCD"].forEach(x => assert.ok(ids.includes(x), x));
+  ["UART2", "UART3", "TMR0", "TMR3"].forEach(x => assert.ok(!ids.includes(x), x));
+  assert.strictEqual(CHIP592D.resources.filter(r => r.category === "ADC").length, 4);
+  assert.strictEqual(CHIP592D.resources.find(r => r.id === "LCD").optional.length, 8);
+});
+
+t("CH591F：QFN28，20 IO，无 I2C/TouchKey，6 路 ADC，USB 设备", () => {
+  assert.strictEqual(CHIP591F.chip.name, "CH591F");
+  assert.strictEqual(CHIP591F.pins.length, 29);
+  assert.strictEqual(Model.validateChip(CHIP591F).ok, true, JSON.stringify(Model.validateChip(CHIP591F).errors));
+  assert.strictEqual(Avail.countIO(CHIP591F, Avail.defaultState(CHIP591F)).total, 20);
+  const ids = CHIP591F.resources.map(r => r.id);
+  assert.ok(!ids.includes("I2C"));
+  assert.ok(ids.includes("USB") && ids.includes("LCD"));
+  assert.strictEqual(CHIP591F.resources.filter(r => r.category === "ADC").length, 6);
+  assert.ok(CHIP591F.resources.filter(r => r.category === "ADC").every(r => r.label.indexOf("TK") < 0));
+});
+
+t("CH591D：QFN20，12 IO，无 I2C/LCD，TMR0-2，4 路 ADC", () => {
+  assert.strictEqual(CHIP591D.chip.name, "CH591D");
+  assert.strictEqual(CHIP591D.pins.length, 21);
+  assert.strictEqual(Model.validateChip(CHIP591D).ok, true, JSON.stringify(Model.validateChip(CHIP591D).errors));
+  assert.strictEqual(Avail.countIO(CHIP591D, Avail.defaultState(CHIP591D)).total, 12);
+  const ids = CHIP591D.resources.map(r => r.id);
+  ["UART0", "UART1", "TMR0", "TMR1", "TMR2", "USB"].forEach(x => assert.ok(ids.includes(x), x));
+  ["I2C", "LCD", "TMR3"].forEach(x => assert.ok(!ids.includes(x), x));
+  assert.strictEqual(CHIP591D.resources.filter(r => r.category === "ADC").length, 4);
+  assert.deepStrictEqual(CHIP591D.globalConfigs.map(c => c.id), ["xtal32k"]);
+});
+
+t("CH591R：TSSOP16，16 脚，10 IO，无 USB/LCD/I2C，ADC 4", () => {
+  assert.strictEqual(CHIP591R.chip.name, "CH591R");
+  assert.strictEqual(CHIP591R.package.family, "dual");
+  assert.strictEqual(CHIP591R.package.pinsPerSide, 8);
+  assert.strictEqual(CHIP591R.package.thermalPad, undefined);
+  assert.strictEqual(CHIP591R.pins.length, 16);
+  assert.strictEqual(Model.validateChip(CHIP591R).ok, true, JSON.stringify(Model.validateChip(CHIP591R).errors));
+  assert.strictEqual(Avail.countIO(CHIP591R, Avail.defaultState(CHIP591R)).total, 10);
+  const ids = CHIP591R.resources.map(r => r.id);
+  ["UART0", "UART1", "SPI0", "TMR0", "TMR1", "TMR2", "TMR3"].forEach(x => assert.ok(ids.includes(x), x));
+  ["USB", "LCD", "I2C"].forEach(x => assert.ok(!ids.includes(x), x));
+  assert.strictEqual(CHIP591R.resources.filter(r => r.category === "ADC").length, 4);
+  assert.strictEqual(CHIP591R.resources.filter(r => r.category === "PWM").length, 3);
 });
 
 console.log("\n=== v1.8-5: 终审修复（I1/I2） ===");

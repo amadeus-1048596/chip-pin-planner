@@ -36,7 +36,7 @@ Checking pin multiplexing before drawing a schematic is tedious: mux tables, map
 and mode restrictions are scattered across a datasheet. This tool puts that data on the
 package diagram, so you can see what a pin can do and what it conflicts with.
 
-Currently bundled: WCH CH58x (CH582M / CH582F / CH583M / CH584M / CH584X / CH584F / CH585M / CH585F / CH585C / CH585D). The data format is vendor-neutral —
+Currently bundled: WCH **CH58x (10)** and **CH59x (7)**, 17 chips in total. The data format is vendor-neutral —
 adding a chip is one data file plus one manifest line. Contributions and chip requests are welcome.
 
 ## Quick start
@@ -49,7 +49,7 @@ Chrome / Edge.
 
 ## 5-minute tour
 
-1. **Pick a chip** from the top-bar dropdown, grouped by vendor/series (currently the CH58x family: CH582M / CH582F / CH583M / CH584M / CH584X / CH584F / CH585M / CH585F / CH585C / CH585D).
+1. **Pick a chip** from the top-bar dropdown, grouped by vendor/series (currently WCH CH58x with 10 chips and CH59x with 7; see the table below).
 2. **Assign pins**, two ways:
    - Click a pin on the package diagram and choose a function. Unavailable options are greyed out with a reason.
 
@@ -77,6 +77,13 @@ Full guide (Chinese): **[docs/user-guide.md](docs/user-guide.md)**.
 | CH58x | CH585F | QFN32 | 24 | No NFC/LED; LCD / USB HS retained; 7 ADC channels (CH585DS1 V1.6) |
 | CH58x | CH585C | QFN26C3 | 17 | 2 UART / 1 SPI / 5 PWM / USB FS+HS; no I2C/NFC/LED/LCD (CH585DS1 V1.6) |
 | CH58x | CH585D | QFN20 | 12 | 2 UART / 1 SPI / 3 PWM / USB FS+HS; no I2C/NFC/LED/LCD (CH585DS1 V1.6) |
+| CH59x | CH592X | QFN32 | 24 | 4 UART / 1 SPI / 1 I2C / 8 PWM / 12 ADC / 12 TouchKey / LCD 20×4 / USB host+device (CH592DS1 V1.9) |
+| CH59x | CH592F | QFN28 | 20 | 4 UART / 1 SPI / 1 I2C / 6 PWM / 8 ADC / 8 TouchKey / LCD 16×4 / USB (CH592DS1 V1.9) |
+| CH59x | CH592A | QFN28 | 20 | Same pins/resources as CH592F; 2.3V minimum supply (CH592DS1 V1.9) |
+| CH59x | CH592D | QFN20 | 12 | 2 UART / 1 SPI / 1 I2C / 3 PWM / 4 ADC / 4 TouchKey / LCD 8×4 / USB (CH592DS1 V1.9) |
+| CH59x | CH591F | QFN28 | 20 | 2 UART / 1 SPI / 6 ADC / LCD 16×4 / USB device; no I2C/TouchKey (CH592DS1 V1.9) |
+| CH59x | CH591D | QFN20 | 12 | 2 UART / 1 SPI / 4 ADC / USB device; no I2C/TouchKey/LCD (CH592DS1 V1.9) |
+| CH59x | CH591R | TSSOP16 | 10 | 2 UART / 1 SPI / 4 ADC; no USB/I2C/TouchKey/LCD (CH592DS1 V1.9) |
 
 ![CH582F QFN28](docs/images/ch582f-qfn28.png)
 
