@@ -7,5 +7,7 @@ window.CHIP_MANIFEST = [
   "chips/wch-ch584x-qfn48.js",
   "chips/wch-ch584f-qfn32.js",
   "chips/wch-ch585m-qfn48.js",
-  "chips/wch-ch585f-qfn32.js"
+  "chips/wch-ch585f-qfn32.js",
+  "chips/wch-ch585c-qfn26c3.js",
+  "chips/wch-ch585d-qfn20.js"
 ];

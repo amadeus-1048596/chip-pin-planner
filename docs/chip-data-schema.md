@@ -35,17 +35,20 @@
 
 | family | 覆盖的常见封装 | 关键参数 | 示例 |
 |---|---|---|---|
-| `quad` | QFN / DFN（四边）、LQFP / TQFP / QFP | `pinsPerSide`、`pitch`、`body`、`thermalPad?` | QFN32：8/边，pitch 0.5，body [5,5] |
+| `quad` | QFN / DFN（四边）、LQFP / TQFP / QFP | `pinsPerSide`、`pitch`、`body`、`pin1?`、`thermalPad?` | QFN32：8/边，pitch 0.5，body [5,5] |
+| `quad-split` | 四边不等数（如 QFN26C3 7/6/7/6） | `counts: [左,下,右,上]`、`pitch`、`body`、`pin1?` | QFN26C3：counts [7,6,7,6]，pin1 左下 |
 | `dual` | SOP / SOIC / TSSOP / DIP（两侧等数） | `pinsPerSide`、`pitch`、`body` | TSSOP20：10/边，pitch 0.65，body [4.4,6.5] |
 | `dual-split` | SOT-23-5/6 等两侧不等数 | `counts: [a,b]`、`pitch`、`body` | SOT-23-5：counts [3,2]，pitch 0.95 |
 
 **当前渲染约定（重要）：**
 
-- 引脚 1 固定在左上角，逆时针编号；
-- `quad`：左侧 1..n 从上到下，底边 n+1..2n 从左到右，右侧 2n+1..3n 从下到上，顶边 3n+1..4n 从右到左；
+- `pin1` 默认 `"topLeft"`（左上、逆时针）；支持 `"bottomLeft"`（左下、逆时针，`sequence: "ccw-up"`），例如 CH585C/CH585D；
+- `quad`（topLeft）：左侧 1..n 从上到下，底边 n+1..2n 从左到右，右侧 2n+1..3n 从下到上，顶边 3n+1..4n 从右到左；
+- `quad`（bottomLeft）：底边 1..n 从左到右，右侧 n+1..2n 从下到上，顶边 2n+1..3n 从右到左，左侧 3n+1..4n 从上到下；
+- `quad-split`：counts 顺序为 [左,下,右,上]；按 `pin1` 选择起始边，其余边依次逆时针；
 - `dual` / `dual-split`：左侧从上到下，右侧从下到上；
 - `thermalPad` 在中心生成 EP，不参与数字脚号覆盖校验；
-- `style`、`pin1`、`sequence` 目前**不参与绘制**（保留字段）；遇到引脚 1 位置或方向不同的封装，需要先补渲染逻辑与测试。
+- `style` 目前仍不参与绘制（保留字段）；`pin1` / `sequence` 已参与布局与 pin1 圆点定位。
 
 **新增一个封装族：**
 

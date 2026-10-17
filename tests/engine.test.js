@@ -346,6 +346,63 @@ t("dual-split：SOT-23-5 = 3+2", () => {
   assert.ok(byNum[4].y > byNum[5].y);
 });
 
+t("quad-split：26 脚 7/6/7/6，pin1 左上", () => {
+  const pkg = { family: "quad-split", counts: [7, 6, 7, 6], pitch: 0.4, body: [3, 3] };
+  const L = Pkg.computePinLayout(pkg);
+  const byNum = {};
+  L.pins.forEach(p => { byNum[p.num] = p; });
+  assert.strictEqual(L.pins.length, 26);
+  assert.strictEqual(byNum[1].side, "left");
+  assert.strictEqual(byNum[7].side, "left");
+  assert.strictEqual(byNum[8].side, "bottom");
+  assert.strictEqual(byNum[13].side, "bottom");
+  assert.strictEqual(byNum[14].side, "right");
+  assert.strictEqual(byNum[20].side, "right");
+  assert.ok(byNum[14].y > byNum[20].y);
+  assert.strictEqual(byNum[21].side, "top");
+  assert.strictEqual(byNum[26].side, "top");
+  assert.ok(byNum[21].x > byNum[26].x);
+});
+
+t("quad-split：26 脚 7/6/7/6，pin1 左下（CH585C）", () => {
+  const pkg = { family: "quad-split", counts: [7, 6, 7, 6], pitch: 0.4, body: [3, 3], pin1: "bottomLeft" };
+  const L = Pkg.computePinLayout(pkg);
+  const byNum = {};
+  L.pins.forEach(p => { byNum[p.num] = p; });
+  assert.strictEqual(L.pins.length, 26);
+  assert.strictEqual(byNum[1].side, "bottom");
+  assert.strictEqual(byNum[6].side, "bottom");
+  assert.ok(byNum[1].x < byNum[6].x);
+  assert.strictEqual(byNum[7].side, "right");
+  assert.strictEqual(byNum[13].side, "right");
+  assert.ok(byNum[7].y > byNum[13].y);
+  assert.strictEqual(byNum[14].side, "top");
+  assert.strictEqual(byNum[19].side, "top");
+  assert.ok(byNum[14].x > byNum[19].x);
+  assert.strictEqual(byNum[20].side, "left");
+  assert.strictEqual(byNum[26].side, "left");
+  assert.ok(byNum[20].y < byNum[26].y);
+});
+
+t("quad：20 脚 5/边，pin1 左下（CH585D）", () => {
+  const pkg = { family: "quad", pinsPerSide: 5, pitch: 0.4, body: [3, 3], pin1: "bottomLeft" };
+  const L = Pkg.computePinLayout(pkg);
+  const byNum = {};
+  L.pins.forEach(p => { byNum[p.num] = p; });
+  assert.strictEqual(L.pins.length, 20);
+  assert.strictEqual(byNum[1].side, "bottom");
+  assert.strictEqual(byNum[5].side, "bottom");
+  assert.strictEqual(byNum[6].side, "right");
+  assert.strictEqual(byNum[10].side, "right");
+  assert.ok(byNum[6].y > byNum[10].y);
+  assert.strictEqual(byNum[11].side, "top");
+  assert.strictEqual(byNum[15].side, "top");
+  assert.ok(byNum[11].x > byNum[15].x);
+  assert.strictEqual(byNum[16].side, "left");
+  assert.strictEqual(byNum[20].side, "left");
+  assert.ok(byNum[16].y < byNum[20].y);
+});
+
 console.log("\n=== 终审修复：结构残缺工程必须被拒 ===");
 function projText(resources) {
   return JSON.stringify({ app: "chip-pin-planner", schemaVersion: 1, chip: "MINI",
@@ -1701,7 +1758,7 @@ t("CH582F：I2C / UART3 映射组语义正确移除", () => {
 
 console.log("\n=== v1.8-4 / M2: 芯片对账 ===");
 
-t("清单：八颗芯片按 M→F→583M→584M→584X→584F→585M→585F 顺序全部可用、id 唯一", () => {
+t("清单：十颗芯片按 M→F→583M→584M→584X→584F→585M→585F→585C→585D 顺序全部可用、id 唯一", () => {
   const defs = [
     require("../chips/wch-ch582m-qfn48.js"),
     require("../chips/wch-ch582f-qfn28.js"),
@@ -1710,15 +1767,17 @@ t("清单：八颗芯片按 M→F→583M→584M→584X→584F→585M→585F 顺�
     require("../chips/wch-ch584x-qfn48.js"),
     require("../chips/wch-ch584f-qfn32.js"),
     require("../chips/wch-ch585m-qfn48.js"),
-    require("../chips/wch-ch585f-qfn32.js")
+    require("../chips/wch-ch585f-qfn32.js"),
+    require("../chips/wch-ch585c-qfn26c3.js"),
+    require("../chips/wch-ch585d-qfn20.js")
   ];
   const chips = Loader.buildChips(defs.map((d, i) => ({ file: "chips/x" + i + ".js", def: d })), Model);
-  assert.deepStrictEqual(chips.map(c => c.ok), [true, true, true, true, true, true, true, true], JSON.stringify(chips.map(c => c.reason)));
-  assert.deepStrictEqual(chips.map(c => c.chipId), ["ch582m-qfn48", "ch582f-qfn28", "ch583m-qfn48", "ch584m-qfn48", "ch584x-qfn48", "ch584f-qfn32", "ch585m-qfn48", "ch585f-qfn32"]);
-  assert.deepStrictEqual(chips.map(c => c.def.chip.name), ["CH582M", "CH582F", "CH583M", "CH584M", "CH584X", "CH584F", "CH585M", "CH585F"]);
+  assert.deepStrictEqual(chips.map(c => c.ok), [true, true, true, true, true, true, true, true, true, true], JSON.stringify(chips.map(c => c.reason)));
+  assert.deepStrictEqual(chips.map(c => c.chipId), ["ch582m-qfn48", "ch582f-qfn28", "ch583m-qfn48", "ch584m-qfn48", "ch584x-qfn48", "ch584f-qfn32", "ch585m-qfn48", "ch585f-qfn32", "ch585c-qfn26c3", "ch585d-qfn20"]);
+  assert.deepStrictEqual(chips.map(c => c.def.chip.name), ["CH582M", "CH582F", "CH583M", "CH584M", "CH584X", "CH584F", "CH585M", "CH585F", "CH585C", "CH585D"]);
 });
 
-t("manifest：按 M→F→583M→584M→584X→584F→585M→585F 列出八份数据文件（顺序即下拉顺序），文件均存在", () => {
+t("manifest：十份数据文件按清单顺序，文件均存在", () => {
   const fs = require("fs");
   const src = fs.readFileSync(__dirname + "/../chips/manifest.js", "utf8");
   const m = src.match(/\[([^\]]*)\]/);
@@ -1732,7 +1791,9 @@ t("manifest：按 M→F→583M→584M→584X→584F→585M→585F 列出八份�
     "chips/wch-ch584x-qfn48.js",
     "chips/wch-ch584f-qfn32.js",
     "chips/wch-ch585m-qfn48.js",
-    "chips/wch-ch585f-qfn32.js"
+    "chips/wch-ch585f-qfn32.js",
+    "chips/wch-ch585c-qfn26c3.js",
+    "chips/wch-ch585d-qfn20.js"
   ]);
   files.forEach(f => assert.ok(fs.existsSync(__dirname + "/../" + f), f + " 应存在"));
 });
@@ -1876,6 +1937,50 @@ t("CH584F：validateChip 通过，33 脚，24 IO，去 USB HS/SPI1/NFC/LED", () 
   ["I2C", "LCD", "USB_FS"].forEach(x => assert.ok(ids.includes(x), x));
   assert.strictEqual(CHIP584F.resources.filter(r => r.category === "ADC").length, 7);
   assert.strictEqual(Avail.countIO(CHIP584F, Avail.defaultState(CHIP584F)).total, 24);
+});
+
+console.log("\n=== M2: CH585C QFN26C3 / CH585D QFN20 ===");
+const CHIP585C = require("../chips/wch-ch585c-qfn26c3.js");
+const CHIP585D = require("../chips/wch-ch585d-qfn20.js");
+
+t("CH585C：validateChip 通过，26+EP 脚，17 IO，quad-split 7/6/7/6", () => {
+  assert.strictEqual(CHIP585C.id, "ch585c-qfn26c3");
+  assert.strictEqual(CHIP585C.chip.name, "CH585C");
+  assert.strictEqual(CHIP585C.package.family, "quad-split");
+  assert.deepStrictEqual(CHIP585C.package.counts, [7, 6, 7, 6]);
+  assert.strictEqual(CHIP585C.package.pin1, "bottomLeft");
+  assert.strictEqual(CHIP585C.pins.length, 27);
+  const v = Model.validateChip(CHIP585C);
+  assert.strictEqual(v.ok, true, JSON.stringify(v.errors));
+  assert.strictEqual(Avail.countIO(CHIP585C, Avail.defaultState(CHIP585C)).total, 17);
+  assert.strictEqual(CHIP585C.pins.find(p => p.num === 3).name, "GND");
+  assert.strictEqual(CHIP585C.pins.find(p => p.num === "EP").name, "GND (EP)");
+});
+
+t("CH585C：仅 UART0/1；无 I2C/NFC/LED/LCD；5 路 PWM / 5 路 ADC", () => {
+  const ids = CHIP585C.resources.map(r => r.id);
+  ["UART0", "UART1"].forEach(x => assert.ok(ids.includes(x), x));
+  ["UART2", "UART3", "I2C", "NFC", "LED", "LCD"].forEach(x => assert.ok(!ids.includes(x), x));
+  assert.strictEqual(CHIP585C.resources.filter(r => r.category === "PWM").length, 5);
+  assert.strictEqual(CHIP585C.resources.filter(r => r.category === "ADC").length, 5);
+});
+
+t("CH585D：validateChip 通过，20+EP 脚，12 IO，quad 5/边 pin1 左下", () => {
+  assert.strictEqual(CHIP585D.id, "ch585d-qfn20");
+  assert.strictEqual(CHIP585D.chip.name, "CH585D");
+  assert.strictEqual(CHIP585D.package.family, "quad");
+  assert.strictEqual(CHIP585D.package.pinsPerSide, 5);
+  assert.strictEqual(CHIP585D.package.pin1, "bottomLeft");
+  assert.strictEqual(CHIP585D.pins.length, 21);
+  const v = Model.validateChip(CHIP585D);
+  assert.strictEqual(v.ok, true, JSON.stringify(v.errors));
+  assert.strictEqual(Avail.countIO(CHIP585D, Avail.defaultState(CHIP585D)).total, 12);
+  const ids = CHIP585D.resources.map(r => r.id);
+  ["UART0", "UART1"].forEach(x => assert.ok(ids.includes(x), x));
+  ["UART2", "UART3", "I2C", "NFC", "LED", "LCD"].forEach(x => assert.ok(!ids.includes(x), x));
+  assert.strictEqual(CHIP585D.resources.filter(r => r.category === "PWM").length, 3);
+  assert.strictEqual(CHIP585D.resources.filter(r => r.category === "ADC").length, 5);
+  assert.deepStrictEqual(CHIP585D.globalConfigs.map(c => c.id), ["debug"]);
 });
 
 console.log("\n=== v1.8-5: 终审修复（I1/I2） ===");

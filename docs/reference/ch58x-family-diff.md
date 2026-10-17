@@ -165,3 +165,13 @@ CH585M QFN48 的 1..48 脚名称与 CH582M **完全一致**（VDCID/VSW/VDD33…
 - CH584M/X：QFN48、40 IO；在 CH585M 基础上去 USB HS/SPI1，保留 NFC/LED/LCD、USB FS、4 UART、1 I2C；引脚与 CH585M 同脚序。两者引脚/资源相同，仅存储配置不同。
 - CH584F：QFN32、24 IO；在 CH585F 基础上去 USB HS/SPI1/NFC/LED，保留 LCD、I2C、USB FS、4 UART；7 路 ADC（AIN0-5/AIN13）。
 - 三者均移除 U2D± 与 SCK1/MOSI1/MISO1 alts；CH584F 的 PA9 记录与 PB9 短接（PB9 未引出）。
+
+**已实现：CH585C / CH585D（2026-10-17）**
+
+- **CH585C（QFN26C3）**：四边 **7/6/7/6**，pin 1 在**左下**、逆时针（图 1-1 CH585C 分图 + 逐脚表互证）。26 脚中 pin 3 为独立 GND，EP 记为 `GND (EP)`；17 IO。
+  - 资源：UART0/UART1、SPI0、TMR0-3、PWM4/5/7/10/11（5 路）、AIN2-A5/AIN13（5 路外部 ADC）、USB FS+HS、GPIO；无 I2C/NFC/LED/LCD、无 TouchKey 标签。
+  - **ADC 冲突记录**：选型表 p1 写 `4+1`，但 QFN26C3 引脚表可见 A2-A5/A13 共 5 路外部通道；当前按引脚表保留 5 路，并在 `meta.note` 标注，**待复核**。
+- **CH585D（QFN20）**：5 脚/边，pin 1 在**左下**、逆时针；20 脚 + EP，12 IO。
+  - 资源：UART0/UART1、SPI0、TMR0-3、PWM4/5/10（3 路）、AIN2-A5/AIN13（5 路外部 ADC）、USB FS+HS、GPIO；无 I2C/NFC/LED/LCD、无 TouchKey 标签。
+  - CH585D 无 PB23，故移除 `rst` 配置；debug 保留。
+- 渲染器为此新增 `quad-split` 与 `pin1: "bottomLeft"` 支持（布局测试覆盖）。
