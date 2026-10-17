@@ -3,7 +3,7 @@
 - 日期：2026-10-06
 - 版本：v1.0（V1 范围：CH582M 专用数据 + 通用引擎）
 - 状态：待评审
-- 作者：Xi.Wang33 × Claude
+- 作者：MeowG
 
 ---
 
@@ -51,7 +51,7 @@
 ```jsonc
 {
   "schemaVersion": 1,
-  "meta": { "source": "CH583DS1 V1.9 (2025-04-10)", "author": "Xi.Wang33", "date": "2026-10-06" },
+  "meta": { "source": "CH583DS1 V1.9 (2025-04-10)", "author": "MeowG", "date": "2026-10-06" },
   "chip":   { "vendor": "WCH", "name": "CH582M", "package": "QFN48" },
   "package": { "...见第 6 节..." },
 

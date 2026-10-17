@@ -12,7 +12,7 @@
 AppId={{8F2C1D74-9B3A-4E52-A6D0-5C7E91B2F4A8}
 AppName=芯片引脚规划器
 AppVersion={#Version}
-AppPublisher=amadeus-1048596
+AppPublisher=MeowG
 DefaultDirName={localappdata}\Programs\chip-pin-planner
 DisableProgramGroupPage=yes
 PrivilegesRequired=lowest

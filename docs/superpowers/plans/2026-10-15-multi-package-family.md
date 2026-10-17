@@ -13,7 +13,7 @@
 ## Global Constraints
 
 - 零依赖、无构建；`file://` 直开；引擎全纯函数、Node 可测；UI 文本中文、进 innerHTML 走 escapeHtml。
-- 芯片事实以 `CH583DS1 V1.9`（`C:\Users\Xi.Wang33\Downloads\CH583DS1.PDF`）+ `docs/reference/ch582-pin-table.txt` 为准；**双引擎交叉，重要结论三处互证**（图1-1 引脚排列 / 逐脚引脚表 / 表7-7 与寄存器位）；手册缺参数 → 挂账告知，**不猜值**。
+- 芯片事实以 `CH583DS1 V1.9`（`C:\Users\MeowG\Downloads\CH583DS1.PDF`）+ `docs/reference/ch582-pin-table.txt` 为准；**双引擎交叉，重要结论三处互证**（图1-1 引脚排列 / 逐脚引脚表 / 表7-7 与寄存器位）；手册缺参数 → 挂账告知，**不猜值**。
 - **逐脚引脚表中间列 = QFN28 引脚号**（"无 P" = QFN28 未引出；2026-10-15 已实测确认）。已知不在 QFN28 的 IO：PB0/PB1/PB2/PB3/PB5/PB6/PB9/PB16/PB17/PB18/PB19/PB20/PB21、PA0/PA1/PA2/PA3/PA6/PA7。
 - 新数据文件 schemaVersion 2；id 规则照既有 slug；每文件头部注明 `meta.source = "CH583DS1 V1.9 (2025-04-10)"`。
 - 既有 181 单测 + fuzz 必须保持绿；回退点：Task 1 Step 0 打 tag `v1.7.1`。
@@ -176,7 +176,7 @@ git commit -m "feat: resolveProjectTarget (name+package routing for chipId-less 
 
 - [ ] **Step 1: 审计（双引擎交叉）**
 
-用既有扫描脚本模式（参考 `.claude\tmp\cpp-opt2-20261010\scan_pb16.py`）对 `C:\Users\Xi.Wang33\Downloads\CH583DS1.PDF` 做两遍：
+用既有扫描脚本模式（参考 `.claude\tmp\cpp-opt2-20261010\scan_pb16.py`）对 `C:\Users\MeowG\Downloads\CH583DS1.PDF` 做两遍：
 
 - pypdf 与 pdfplumber 各抽一遍**全部 40 个 IO 引脚的复用功能描述块**，产出"CH582M vs CH583M"的逐脚 alts 差异两版清单；
 - 差异合并去重后与**图1-1 的 CH583M 标注**互证（已知锚点：PA0/SCK1、PA1/MOSI1、PA2/MISO1）；
@@ -194,7 +194,7 @@ SPI1 说明：手册第 10 章"SPI1 只支持主机模式"；逐脚表 PA0-2 未
 ```js
     schemaVersion: 2,
     id: "ch583m-qfn48",
-    meta: { source: "CH583DS1 V1.9 (2025-04-10)", author: "Xi.Wang33", date: "2026-10-15",
+    meta: { source: "CH583DS1 V1.9 (2025-04-10)", author: "MeowG", date: "2026-10-15",
             note: "与 CH582M 差异见 docs/reference/ch58x-family-diff.md：+SPI1（PA0-2）" },
     chip: { vendor: "WCH", name: "CH583M", package: "QFN48" },
 ```
