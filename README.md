@@ -91,7 +91,9 @@
 │   └── util.js                # escapeHtml 等
 ├── chips/                     # 每文件一颗芯片
 │   ├── manifest.js            # 清单（新增芯片必须加一行）
-│   └── wch-ch58xx-*.js        # 芯片数据
+│   ├── wch-ch582m-qfn48.js    # CH582M 基线数据
+│   ├── wch-ch582f-qfn28.js    # CH582F（QFN28 子集）
+│   └── wch-ch583m-qfn48.js    # CH583M（+SPI1）
 ├── tests/                     # engine / fuzz / dist 三套测试
 ├── tools/                     # 发布组装、手册审计
 ├── installer/                 # Inno Setup 安装脚本
@@ -127,7 +129,7 @@
 ### 提了之后，怎么一起维护？
 
 - **谁加谁维护**：数据文件的 `meta.author` 是长期维护者标记。芯片行为、手册更新、封装差异，优先找该文件的作者。
-- **只提需求也有署名**：Release notes 会写 `requested by @你`；如果你帮忙在真实硬件上验证，也会一并致谢。
+- **只提需求也有署名**：合并时会在 commit / Release notes 里写 `requested by @你`；如果你帮忙在真实硬件上验证，也会一并致谢。
 - **发现问题**：开 Issue（附手册页码/截图）；小修直接提 PR。
 - **发版**：改动先合进 master，CI 跑 engine / fuzz / dist；攒一批芯片或功能后打 tag，`release.yml` 自动更新 Pages 和 Release，离线用户双击 `update.bat` 即可升级。
 - **想长期一起维护？** 连续几个高质量 PR 后，我会邀请你成为 maintainer，给合并/发版权限。项目不大，门槛也不高。
