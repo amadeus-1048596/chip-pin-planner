@@ -5,18 +5,45 @@
 [![在线版](https://img.shields.io/badge/online-demo-brightgreen)](https://amadeus-1048596.github.io/chip-pin-planner/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-画板前的“引脚沙盘”：在芯片封装图上点选外设引脚，实时看到占用、冲突与可选方案，最后导出引脚清单去画原理图。
-**不生成代码**，就是资源规划工具。零依赖、纯静态，双击 `index.html` 即用。
+> 画板前，先把引脚想清楚。
+
+翻数据手册、对复用表、担心两个外设抢同一个脚——这些事最好在画原理图之前就解决。
+这个工具把芯片封装图变成一张可以点的“引脚沙盘”：点脚选功能、冲突自动标红、最后导出一份清单去画板。
+**它不生成代码**，只负责把“哪个脚用来干什么”定下来。
 
 ![界面总览](docs/images/overview.png)
 
+**在线版（永远最新）**：<https://amadeus-1048596.github.io/chip-pin-planner/><br>
+**下载离线版**：[Releases](https://github.com/amadeus-1048596/chip-pin-planner/releases)
+
+## 目录
+
+- [为什么做这个](#为什么做这个)
+- [快速开始](#快速开始)
+- [5 分钟上手](#5-分钟上手)
+- [支持的芯片](#支持的芯片)
+- [工程结构](#工程结构)
+- [一起完善](#一起完善)
+- [规则（硬要求）](#规则硬要求)
+- [已知限制](#已知限制)
+- [常见问题](#常见问题)
+- [License](#license)
+
+## 为什么做这个
+
+画板前最花时间的事情之一，不是布线，而是确认某个脚到底能不能复用。数据手册几十页，复用表、映射位、模式限制散在不同章节，改一个外设可能要来回翻好几遍。
+
+我把 CH58x 系列的引脚表整理成结构化数据，又把这张表搬到了封装图上。于是有了这个小工具：点一点，就知道这个脚还能做什么、会不会和别的东西打架。
+
+它先在 WCH CH58x 上打磨。数据是开放的，欢迎把你在用的芯片加进来。
+
 ## 快速开始
 
-- **在线版（推荐，永远最新）**：<https://amadeus-1048596.github.io/chip-pin-planner/>
-- **离线 zip**：到 [Releases](https://github.com/amadeus-1048596/chip-pin-planner/releases) 下载 `chip-pin-planner-vX.Y.zip`，解压后双击 `index.html`（无需联网、无需安装）
-- **安装器**：下载 `chip-pin-planner-setup-vX.Y.exe`，per-user 安装（无需管理员）；已安装的旧版双击产物目录里的 `update.bat` 一键升级
+- **在线用（30 秒）**：打开 <https://amadeus-1048596.github.io/chip-pin-planner/>，选芯片就能开始。
+- **离线用**：到 [Releases](https://github.com/amadeus-1048596/chip-pin-planner/releases) 下载 `chip-pin-planner-vX.Y.zip`，解压后双击 `index.html`。无需联网、无需安装、无需本地服务器。
+- **安装器**：下载 `chip-pin-planner-setup-vX.Y.exe`，per-user 安装（不需要管理员权限）。已安装的旧版双击产物目录里的 `update.bat` 即可升级。
 
-支持 Chrome / Edge。`file://` 直接打开即可，不需要本地服务器。
+支持 Chrome / Edge。
 
 ## 5 分钟上手
 
@@ -32,7 +59,7 @@
 5. **导出**：顶栏可导出 CSV / Markdown 引脚清单、工程 JSON（下次载入继续）、封装图 SVG。
 6. **保存进度**：点“保存工程”下载 JSON；“载入工程”会自动切到对应芯片。
 
-完整说明（映射组、可选信号、GPIO 命名、快捷键与常见问题）见 **[使用教程](docs/user-guide.md)**。
+完整说明（映射组、可选信号、GPIO 命名、快捷键与排错）见 **[使用教程](docs/user-guide.md)**。
 
 ## 支持的芯片
 
@@ -42,19 +69,102 @@
 | CH582F | QFN28 | 20 | CH582M 的 QFN28 子集封装 |
 | CH583M | QFN48 | 40 | CH582M + SPI1 主机 |
 
-缺你用的芯片？芯片数据是纯文本，欢迎按 [贡献指南](CONTRIBUTING.md) 加一颗——通常就是“一个数据文件 + 清单一行”。
+![CH582F QFN28](docs/images/ch582f-qfn28.png)
+
+缺你用的芯片？芯片数据是纯文本，欢迎按 [贡献指南](CONTRIBUTING.md) 加一颗——通常就是“一个数据文件 + 清单一行”。不会写代码也完全可以提需求，见下一节。
+
+## 工程结构
+
+```text
+.
+├── index.html                 # 入口；双击即用
+├── js/
+│   ├── engine/                # 芯片无关的纯逻辑（Node 可测）
+│   │   ├── model.js           # schema 校验、chipId
+│   │   ├── availability.js    # 冲突检测、候选、分配、状态
+│   │   └── exporters.js       # CSV / Markdown / 工程 JSON
+│   ├── render/                # 手写 SVG 封装图
+│   │   ├── package-svg.js     # quad / dual / dual-split 封装渲染
+│   │   └── interactions.js    # 缩放、平移
+│   ├── app.js                 # UI 装配、状态、撤销
+│   ├── loader.js              # manifest 动态加载与对账
+│   └── util.js                # escapeHtml 等
+├── chips/                     # 每文件一颗芯片
+│   ├── manifest.js            # 清单（新增芯片必须加一行）
+│   └── wch-ch58xx-*.js        # 芯片数据
+├── tests/                     # engine / fuzz / dist 三套测试
+├── tools/                     # 发布组装、手册审计
+├── installer/                 # Inno Setup 安装脚本
+├── docs/
+│   ├── user-guide.md          # 使用教程
+│   ├── chip-data-schema.md    # 芯片数据 schema
+│   ├── release.md             # 发布手册
+│   ├── reference/             # 手册审计事实源与家族差异
+│   └── superpowers/           # 设计史（spec / plan）
+├── .github/workflows/         # ci.yml / release.yml
+├── update.bat                 # 离线版一键更新
+└── LICENSE
+```
+
+几个关键设计：
+
+- **零依赖、无构建**：浏览器直接打开 `index.html`，不装包、不打包；
+- **引擎与数据分离**：`js/engine/` 不认识任何具体芯片，芯片只是 `chips/` 下的数据文件；
+- **file:// 优先**：浏览器侧禁用 ES modules，所有文件用 UMD-lite 尾巴，Node 测试可以直接 `require`；
+- **数据即文档**：引脚、资源、约束都写在数据文件里，评审时逐脚对数据手册。
+
+## 一起完善
+
+这个项目最欢迎两类贡献：**加芯片**和**修数据**。不需要你懂前端。
+
+### 提一颗芯片（不会写代码也可以）
+
+1. 打开 [芯片支持请求](https://github.com/amadeus-1048596/chip-pin-planner/issues/new/choose)，填型号、封装、公开数据手册链接，以及你关心的外设。
+2. 我会先确认手册版本和数据可行性，在 Issue 里回复。
+3. 如果你愿意动手：按 [CONTRIBUTING.md](CONTRIBUTING.md) 加一个数据文件 + `chips/manifest.js` 一行，跑测试后提 PR；没时间也没关系，我会排期加。
+4. Review 时逐脚对数据手册，CI 必须全绿；合并后你的名字会写进 `meta.author` 和 Release notes。
+
+### 提了之后，怎么一起维护？
+
+- **谁加谁维护**：数据文件的 `meta.author` 是长期维护者标记。芯片行为、手册更新、封装差异，优先找该文件的作者。
+- **发现问题**：开 Issue（附手册页码/截图）；小修直接提 PR。
+- **发版**：改动先合进 master，CI 跑 engine / fuzz / dist；攒一批芯片或功能后打 tag，`release.yml` 自动更新 Pages 和 Release，离线用户双击 `update.bat` 即可升级。
+- **想长期一起维护？** 连续几个高质量 PR 后，我会邀请你成为 maintainer，给合并/发版权限。项目不大，门槛也不高。
+- **署名**：默认用你的 GitHub 昵称；也可以在 PR 里指定想要的署名。
+
+### 三种参与方式
+
+| 方式 | 适合谁 | 怎么做 |
+|---|---|---|
+| 提需求 | 不写代码 / 暂时没时间 | 开 Issue，附手册链接和你关心的外设 |
+| 加芯片 / 修数据 | 愿意对几页手册 | 一个数据文件 + manifest 一行，跑测试后提 PR |
+| 改引擎 / UI | 熟悉 JS | 先写失败测试，再改实现；保持零依赖 |
+
+## 规则（硬要求）
+
+1. **数据以公开手册为准**，逐脚核对，不猜值；`meta.source` 必须写清手册型号、版本（有页码更好）。
+2. **新芯片 = 一个数据文件 + `chips/manifest.js` 一行**。漏行不会报错，芯片会静默不显示。
+3. **零依赖、无构建、`file://` 直开**；浏览器侧禁用 ES modules，统一使用 UMD-lite 尾巴。
+4. **UI 文本中文**；进入 `innerHTML` 的字符串必须过 `escapeHtml`。
+5. **先测试后实现**：PR 必须 CI 全绿；一颗芯片一个 PR，不夹带无关改动。
+6. **同族多封装各建一个文件**，差异写进 `docs/reference/` 的家族差异文档。
+
+## 已知限制
+
+- 目前只有 CH58x 系列三颗芯片，更多型号靠大家一起补；
+- 配置只存在当前会话内存里，刷新即清空——需要留存请用“保存工程”；
+- 不生成代码，也不做电气规则检查（ERC）或自动布线；
+- 安装器未签名，Windows 可能弹 SmartScreen，选择“更多信息 → 仍要运行”即可。
 
 ## 常见问题
 
 - **配置会保存吗？** 刷新即清空（各芯片的会话内状态互相独立）。需要留存请用“保存工程”导出 JSON。
 - **为什么点引脚没反应？** 拖动超过 8px 会被判定为平移画布；请直接点击引脚焊盘。也可以从左侧资源目录分配。
-- **为什么不生成代码？** 工具只负责“哪些脚用来做什么”的规划与冲突校验；代码生成不在范围内。
-- **怎么更新？** zip/安装器用户双击 `update.bat`（比对在线 `version.json`），或重新下载 Release；在线版永远最新。
+- **怎么更新？** zip / 安装器用户双击 `update.bat`（比对在线 `version.json`），或重新下载 Release；在线版永远最新。
+- **数据和我手上的手册不一致怎么办？** 开 Issue 并附页码/截图；以公开手册为准，确认后会更新数据并补测试。
 - **能加自己的芯片吗？** 可以，见 [CONTRIBUTING.md](CONTRIBUTING.md) 与 [数据 schema](docs/chip-data-schema.md)。
 
 ## 开发者
-
-零依赖、无构建；浏览器侧使用传统 `<script>`（`file://` 下 ES modules 会被 CORS 挡）。
 
 ```bash
 node tests/engine.test.js   # 引擎 + 芯片数据（200 条）
@@ -62,15 +172,10 @@ node tests/fuzz.js          # 随机操作 8000 次 + 不变量
 node tests/dist.test.js     # 发布物 / zip / 安装器 / update.bat（需 Windows PowerShell）
 ```
 
-- `js/engine/` 芯片无关纯逻辑；`js/render/` SVG 渲染；`js/app.js` UI
-- `chips/*.js` 每文件一颗芯片；`chips/manifest.js` 清单（⚠️ 漏行会静默不显示）
-- 发布流程（tag → CI → Pages/Release）见 [docs/release.md](docs/release.md)
-- 设计史在 `docs/superpowers/`；数据 schema 见 [docs/chip-data-schema.md](docs/chip-data-schema.md)
-
-## 贡献
-
-欢迎加芯片、修数据、提改进。请先读 [CONTRIBUTING.md](CONTRIBUTING.md)；用 AI 加芯片可以让它读 [AGENTS.md](AGENTS.md)。
+发布流程见 [docs/release.md](docs/release.md)；设计史在 `docs/superpowers/`；给 AI 助手用的执行清单在 [AGENTS.md](AGENTS.md)。
 
 ## License
 
-[MIT](LICENSE) © 2026 amadeus-1048596
+[MIT](LICENSE) © 2026 MeowG
+
+Designed & maintained by **MeowG**.

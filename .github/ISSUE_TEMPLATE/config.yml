@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 使用教程
+    url: https://github.com/amadeus-1048596/chip-pin-planner/blob/master/docs/user-guide.md
+    about: 先看常见操作与排错
+  - name: 贡献指南
+    url: https://github.com/amadeus-1048596/chip-pin-planner/blob/master/CONTRIBUTING.md
+    about: 加芯片、修数据、提 PR 的完整流程

@@ -8,6 +8,19 @@
 - 浏览器（Chrome / Edge）用来人工验收；
 - 一份**公开的数据手册**。数据必须逐脚核对，**不猜值**。
 
+## 先提 Issue 还是直接 PR？
+
+- **不确定能不能加 / 没时间写数据**：开 [芯片支持请求](https://github.com/amadeus-1048596/chip-pin-planner/issues/new/choose)，填型号、封装和公开手册链接；
+- **已经照手册核对完数据**：直接提 PR（一个芯片一个 PR），并在描述里写清数据来源；
+- **只是发现数据有误**：附页码/截图开 Issue，或直接提一个小 PR。
+
+## 维护与署名
+
+- 数据文件里的 `meta.author` 是该芯片的长期维护者标记；请填你希望使用的署名（默认 GitHub 昵称）；
+- 谁加的芯片谁最熟：后续手册更新、封装差异、行为问题，优先找该文件的作者；
+- 合并后你的名字会出现在 Release notes；连续几个高质量 PR 后，可以申请成为 maintainer，获得合并/发版权限；
+- 项目发版节奏：改动先合 master → CI 全绿 → 攒一批后打 tag → 自动更新 Pages / Release。离线用户双击 `update.bat` 升级。
+
 ## 加一颗芯片（完整教程）
 
 ### 1. 复制模板
@@ -100,6 +113,8 @@ node tests/fuzz.js
 - 保持零依赖、浏览器侧不用 ES modules。
 
 ## PR 清单
+
+仓库自带 [PR 模板](.github/pull_request_template.md)，提 PR 时按模板勾选即可：
 
 - [ ] 芯片型号 / 封装 / 数据来源（手册名 + 版本 + 页码更好）
 - [ ] `chips/manifest.js` 已加行

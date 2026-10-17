@@ -1,0 +1,67 @@
+name: 芯片支持请求
+description: 请求新增一颗芯片。不会写代码也可以，填型号和手册链接即可。
+title: "[芯片请求] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢你！请尽量填全下面的信息，尤其是**公开数据手册链接**。
+        如果愿意自己提交数据，请先看 [CONTRIBUTING.md](https://github.com/amadeus-1048596/chip-pin-planner/blob/master/CONTRIBUTING.md)。
+
+  - type: input
+    id: chip
+    attributes:
+      label: 芯片型号
+      placeholder: 例如 CH582M、STM32G431
+    validations:
+      required: true
+
+  - type: input
+    id: package
+    attributes:
+      label: 封装
+      placeholder: 例如 QFN48、LQFP64、TSSOP20
+    validations:
+      required: true
+
+  - type: input
+    id: datasheet
+    attributes:
+      label: 公开数据手册链接或型号 + 版本
+      description: 优先给厂商官网链接；如果没有公开手册，请说明。
+      placeholder: https://... 或 "CH583DS1 V1.9 (2025-04-10)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: peripherals
+    attributes:
+      label: 你关心的外设 / 引脚
+      description: 例如 UART / I2C / SPI / PWM / ADC；有没有必须使用的引脚？
+      placeholder: 我需要 2 路 UART、1 路 I2C，以及 6 路 PWM…
+
+  - type: dropdown
+    id: pr
+    attributes:
+      label: 你愿意自己提交数据吗？
+      options:
+        - 愿意，我可以按 CONTRIBUTING 提交 PR
+        - 愿意，但需要一些指导
+        - 暂时没时间，希望维护者来加
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: 其他说明
+      description: 用途、时间要求、参考项目、你已经核对过的信息等。
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: 确认
+      options:
+        - label: 我确认所附数据手册是公开可引用的
+          required: true
