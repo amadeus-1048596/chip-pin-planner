@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>芯片引脚规划器</title>
+<link rel="stylesheet" href="css/app.css">
+<style id="svg-style">
+/* 封装图相关样式（导出 SVG 需内联携带；file:// 下读 app.css 的 cssRules 会被跨源拦截，故样式单一来源在此） */
+svg text { font-family: "Microsoft YaHei", system-ui, sans-serif; user-select: none; }
+.pkg-body { fill: #f1f3f4; stroke: #80868b; stroke-width: 0.05; }
+.chip-label { font-size: 0.32px; fill: #5f6368; font-weight: 600; }
+.ep-note { font-size: 0.20px; fill: #80868b; }
+.pin { cursor: pointer; }
+.pin-pad { fill: #e8eaed; stroke: #9aa0a6; stroke-width: 0.04; }
+.ep-pad { fill: #eef1f4; stroke: #dadce0; }
+.pin1-dot { fill: #80868b; }
+.pin-name { font-size: 0.26px; fill: #202124; }
+.pin-num { font-size: 0.22px; fill: #9aa0a6; }
+.pin .pin-pad { transition: fill .12s; }
+.pin:hover .pin-pad { stroke: #1a73e8; stroke-width: 0.08; }
+
+.pin[data-status="free"] .pin-pad { fill: #e8eaed; }
+.pin[data-status="locked"] .pin-pad { fill: #bdc1c6; stroke-dasharray: 0.1 0.08; }
+.pin[data-status="fixed"] .pin-pad { fill: #3c4043; }
+.pin[data-status="fixed"] { cursor: default; }
+.pin[data-status="conflict"] .pin-pad { fill: #ea4335; }
+.pin[data-status="assigned"] .pin-pad { fill: #9aa0a6; }
+.pin[data-status="assigned"][data-cat="UART"]  .pin-pad { fill: #4285f4; }
+.pin[data-status="assigned"][data-cat="SPI"]   .pin-pad { fill: #a142f4; }
+.pin[data-status="assigned"][data-cat="I2C"]   .pin-pad { fill: #00acc1; }
+.pin[data-status="assigned"][data-cat="PWM"]   .pin-pad { fill: #fa903e; }
+.pin[data-status="assigned"][data-cat="ADC"]   .pin-pad { fill: #f9ab00; }
+.pin[data-status="assigned"][data-cat="USB"]   .pin-pad { fill: #34a853; }
+.pin[data-status="assigned"][data-cat="GPIO"]  .pin-pad { fill: #7cb342; }
+.pin[data-status="assigned"][data-cat="TIMER"] .pin-pad { fill: #8d6e63; }
+.pin[data-status="assigned"][data-cat="系统"]  .pin-pad { fill: #5f6368; }
+</style>
+</head>
+<body>
+  <header id="topbar">
+    <span id="app-title">芯片引脚规划器</span>
+    <select id="chip-select" title="切换芯片（会话内各芯片配置互相独立；刷新即清空）" style="margin-left:10px"></select>
+    <span class="spacer"></span>
+    <button id="btn-export-csv">导出 CSV</button>
+    <button id="btn-export-md">导出 Markdown</button>
+    <button id="btn-export-proj">保存工程</button>
+    <label class="btn">载入工程<input type="file" id="file-import" accept=".json" hidden></label>
+    <button id="btn-export-svg">导出封装图</button>
+  </header>
+  <main id="layout">
+    <aside id="left-panel"></aside>
+    <section id="chip-host"><p class="hint">（封装图将在此渲染）</p></section>
+    <aside id="right-panel"></aside>
+  </main>
+  <footer id="statusbar"></footer>
+  <div id="conflict-banner" hidden></div>
+  <div id="log"></div>
+  <script src="js/engine/model.js"></script>
+  <script src="js/engine/availability.js"></script>
+  <script src="js/engine/exporters.js"></script>
+  <script src="js/util.js"></script>
+  <script src="chips/registry.js"></script>
+  <script src="chips/manifest.js"></script>
+  <script src="js/loader.js"></script>
+  <script src="js/render/package-svg.js"></script>
+  <script src="js/render/interactions.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

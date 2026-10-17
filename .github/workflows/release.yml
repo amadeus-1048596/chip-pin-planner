@@ -1,0 +1,59 @@
+name: release
+on:
+  push:
+    tags: ["v*"]
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+jobs:
+  release:
+    runs-on: windows-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Assemble staging
+        shell: powershell
+        run: node tools/assemble-dist.js --version ${{ github.ref_name }} --out dist
+      - name: Build zip (flat root)
+        shell: powershell
+        run: Compress-Archive -Path "dist/site/*" -DestinationPath "dist/chip-pin-planner-${{ github.ref_name }}.zip"
+      - name: Stage download/ for Pages
+        shell: powershell
+        run: |
+          New-Item -ItemType Directory -Force dist/site/download | Out-Null
+          Copy-Item "dist/chip-pin-planner-${{ github.ref_name }}.zip" "dist/site/download/latest.zip"
+          Copy-Item "dist/site/version.json" "dist/site/download/version.json"
+      - name: Install Inno Setup
+        shell: powershell
+        run: choco install innosetup --no-progress -y
+      - name: Compile installer
+        shell: powershell
+        run: |
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /DVersion=${{ github.ref_name }} /DSrc=${{ github.workspace }}\dist\site installer\chip-pin-planner.iss
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/site
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Release notes
+        shell: powershell
+        run: |
+          $prev = git describe --tags --abbrev=0 "HEAD^" 2>$null
+          if (-not $prev) { $prev = git rev-list --max-parents=0 HEAD }
+          git log "$prev..HEAD" --pretty="- %s" | Out-File -Encoding utf8 notes.md
+      - name: Create release
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ github.ref_name }}" "dist/chip-pin-planner-${{ github.ref_name }}.zip" "dist/chip-pin-planner-setup-${{ github.ref_name }}.exe" --title "${{ github.ref_name }}" --notes-file notes.md

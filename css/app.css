@@ -1,0 +1,54 @@
+html, body { margin: 0; height: 100%; font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif; font-size: 13px; color: #202124; }
+body { display: flex; flex-direction: column; }
+#topbar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid #dadce0; }
+#topbar .spacer { flex: 1; }
+#layout { flex: 1; display: flex; min-height: 0; }
+#left-panel, #right-panel { width: 240px; overflow-y: auto; padding: 8px; border-right: 1px solid #dadce0; }
+#right-panel { border-right: none; border-left: 1px solid #dadce0; }
+#chip-host { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #fafafa; }
+#chip-host svg { width: 100%; height: 100%; }
+#statusbar { padding: 6px 12px; border-top: 1px solid #dadce0; color: #5f6368; }
+#conflict-banner { position: fixed; top: 44px; left: 50%; transform: translateX(-50%);
+  background: #fce8e6; color: #c5221f; border: 1px solid #ea4335; border-radius: 6px; padding: 6px 14px; z-index: 20; }
+#log { position: fixed; left: 8px; bottom: 40px; max-width: 480px; color: #5f6368; }
+.hint { color: #9aa0a6; }
+#topbar button, #topbar .btn { padding: 4px 10px; border: 1px solid #dadce0; border-radius: 6px; background: #fff; cursor: pointer; }
+#topbar button:hover, #topbar .btn:hover { background: #f1f3f4; }
+
+/* 封装图与引脚状态样式已移至 index.html 的 <style id="svg-style">：
+   导出 SVG 需要内联携带样式，而 file:// 下读取 app.css 的 cssRules 会被跨源拦截（SecurityError），
+   因此样式的单一来源是同文档内的 <style id="svg-style">。 */
+
+/* ===== 面板 ===== */
+#res-filter { width: 100%; box-sizing: border-box; padding: 4px 6px; margin-bottom: 6px;
+  font-size: 12px; border: 1px solid #dadce0; border-radius: 6px; }
+.cat-head { cursor: pointer; user-select: none; }
+.cat-head:hover { color: #1a73e8; }
+.cat-head .cnt { color: #9aa0a6; font-weight: normal; }
+#left-panel h3 { margin: 10px 0 4px; font-size: 12px; color: #5f6368; }
+.cfg { display: flex; gap: 6px; align-items: center; padding: 3px 0; }
+.res { padding: 3px 6px; border-radius: 4px; cursor: pointer; }
+.res:hover { background: #e8f0fe; }
+.res.used { background: #e6f4ea; font-weight: 600; }
+.res .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.dot.ok { background: #34a853; }
+.dot.warn { background: #f9ab00; }
+.dot.blocked { background: #ea4335; }
+button.mini { font-size: 11px; margin-left: 6px; padding: 1px 6px; border: 1px solid #dadce0;
+  border-radius: 4px; background: #fff; cursor: pointer; }
+button.mini:hover { background: #f1f3f4; }
+select.mini { font-size: 11px; margin-left: 6px; padding: 1px 2px; border: 1px solid #dadce0; border-radius: 4px; background: #fff; }
+.sig-name { cursor: pointer; border-bottom: 1px dotted #9aa0a6; }
+.sig-name:hover { color: #1a73e8; border-bottom-color: #1a73e8; }
+
+/* ===== 引脚点击菜单 ===== */
+.pin-menu { position: fixed; z-index: 50; min-width: 200px; max-width: 300px; background: #fff;
+  border: 1px solid #dadce0; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,.18); padding: 4px;
+  max-height: 70vh; overflow-y: auto; }
+.menu-item { display: block; width: 100%; text-align: left; background: none; border: none;
+  padding: 6px 10px; font-size: 13px; border-radius: 4px; cursor: pointer; color: #202124; white-space: normal; }
+.menu-item:hover { background: #e8f0fe; }
+.menu-item.menu-info { color: #5f6368; cursor: default; }
+.menu-item.menu-info:hover { background: none; }
+.menu-item.disabled { color: #bdc1c6; cursor: not-allowed; }
+.menu-item.disabled:hover { background: none; }
