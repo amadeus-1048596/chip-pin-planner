@@ -855,6 +855,34 @@ t("buildChips: 重复 id 后到者置灰", () => {
   assert.strictEqual(chips[1].ok, false);
   assert.strictEqual(chips[1].reason, "id 与 MINI 冲突");
 });
+console.log("\n=== M1: 芯片按 vendor/series 分组 ===");
+t("groupChips：按 vendor · series 分组，保持清单顺序", () => {
+  const chips = [
+    { ok: true, def: { chip: { vendor: "WCH", series: "CH58x", name: "CH582M", package: "QFN48" } } },
+    { ok: true, def: { chip: { vendor: "WCH", series: "CH59x", name: "CH592", package: "QFN32" } } },
+    { ok: true, def: { chip: { vendor: "WCH", series: "CH58x", name: "CH583M", package: "QFN48" } } }
+  ];
+  const g = Loader.groupChips(chips);
+  assert.strictEqual(g.length, 2);
+  assert.strictEqual(g[0].label, "WCH · CH58x");
+  assert.deepStrictEqual(g[0].items.map(x => x.index), [0, 2]);
+  assert.strictEqual(g[1].label, "WCH · CH59x");
+  assert.deepStrictEqual(g[1].items.map(x => x.index), [1]);
+});
+t("groupChips：缺 series 归入未分类", () => {
+  const chips = [{ ok: true, def: { chip: { vendor: "WCH", name: "X", package: "QFN8" } } }];
+  const g = Loader.groupChips(chips);
+  assert.strictEqual(g[0].label, "WCH · 未分类");
+});
+t("validateChip：chip.series 若提供必须是非空字符串", () => {
+  const bad = JSON.parse(JSON.stringify(miniChip));
+  bad.chip.series = "  ";
+  const r = Model.validateChip(bad);
+  assert.ok(r.errors.some(e => e.includes("series")));
+  const ok = JSON.parse(JSON.stringify(miniChip));
+  ok.chip.series = "CH58x";
+  assert.strictEqual(Model.validateChip(ok).ok, true);
+});
 t("escapeHtml: 五个字符实体化", () => {
   const Util = require("../js/util.js");
   assert.strictEqual(Util.escapeHtml('<a b="c">&\'x'), "&lt;a b=&quot;c&quot;&gt;&amp;&#39;x");
