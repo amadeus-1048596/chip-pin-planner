@@ -99,7 +99,7 @@
       nums[p.num] = true;
     });
     var pkg = def.package || {};
-    var FAMILIES = ["quad", "dual", "dual-split"];
+    var FAMILIES = ["quad", "dual", "dual-split", "quad-split"];
     if (FAMILIES.indexOf(pkg.family) < 0) errors.push("package.family 非法: " + pkg.family);
     if (typeof pkg.pitch !== "number" || !(pkg.pitch > 0)) errors.push("package.pitch 必须是正数");
     if (!Array.isArray(pkg.body) || pkg.body.length !== 2 ||
@@ -110,6 +110,20 @@
     if (pkg.family === "quad" && typeof pkg.pinsPerSide === "number") expectedPins = 4 * pkg.pinsPerSide;
     else if (pkg.family === "dual" && typeof pkg.pinsPerSide === "number") expectedPins = 2 * pkg.pinsPerSide;
     else if (pkg.family === "dual-split" && Array.isArray(pkg.counts)) expectedPins = pkg.counts[0] + pkg.counts[1];
+    else if (pkg.family === "quad-split" && Array.isArray(pkg.counts)) {
+      expectedPins = pkg.counts.reduce(function (s, v) { return s + v; }, 0);
+    }
+    if (pkg.family === "quad-split" &&
+        (!Array.isArray(pkg.counts) || pkg.counts.length !== 4 ||
+         !pkg.counts.every(function (v) { return Number.isInteger(v) && v > 0; }))) {
+      errors.push("package.counts 必须是 4 个正整数（左/下/右/上）");
+    }
+    if (pkg.pin1 !== undefined && ["topLeft", "bottomLeft"].indexOf(pkg.pin1) < 0) {
+      errors.push("package.pin1 仅支持 topLeft / bottomLeft");
+    }
+    if (pkg.sequence !== undefined && ["ccw-down", "ccw-up"].indexOf(pkg.sequence) < 0) {
+      errors.push("package.sequence 仅支持 ccw-down / ccw-up");
+    }
     if (expectedPins > 0) {
       var missingNums = [];
       for (var n = 1; n <= expectedPins; n++) { if (!nums[n]) missingNums.push(n); }
