@@ -7,6 +7,7 @@
 - `chips/*.js` —— 芯片数据（每文件一颗芯片）；`chips/manifest.js` —— 清单（**新增文件必须在此加一行，否则网页静默不显示**）
 - `js/engine/`（纯逻辑，Node 可测）· `js/render/`（SVG 渲染）· `js/app.js`（UI）
 - `tests/engine.test.js`（单测）· `tests/fuzz.js`（模糊测试）· `docs/chip-data-schema.md`（schema 权威说明）
+- `docs/user-guide.md`（用户教程）· `docs/release.md`（发布手册）· `docs/reference/`（数据审计事实源）
 
 ## 硬规则
 
