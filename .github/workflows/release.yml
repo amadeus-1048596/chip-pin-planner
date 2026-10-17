@@ -48,6 +48,7 @@ jobs:
       - name: Release notes
         shell: powershell
         run: |
+          [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
           $prev = $null
           if (git rev-parse --verify --quiet "HEAD^") {
             $prev = @(git tag --merged "HEAD^" --list "v*" --sort=-v:refname)[0]
