@@ -839,7 +839,7 @@ git push origin v1.9
 agent-browser --session cppv19 open "https://amadeus-1048596.github.io/chip-pin-planner/"
 ```
 
-逐项：页面出现 + "就绪（v1.9）：可用芯片 3 颗"；切 CH582F 看 QFN28 图；切 CH583M 看 SPI1。截图存 `.claude\tmp\cpp-release-20261016\`。
+逐项：页面出现 + "就绪（v1.9）：可用芯片 3 颗"；切 CH582F 看 QFN28 图；切 CH583M 看 SPI1。截图存 `tmp\cpp-release-20261016\`。
 再验新版 update.bat 的线上真 URL 路径：本地解压刚下载的 zip → 双击 `update.bat` → 应输出 `[SKIP] 已是最新`（等价手工命令：`cmd /c update.bat`）。
 （用户验收项：Edge 里真实双击解压目录的 index.html 一眼。）
 

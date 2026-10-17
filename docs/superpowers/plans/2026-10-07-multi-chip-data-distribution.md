@@ -4,7 +4,7 @@
 
 **Goal:** 规划器从"单芯片专用"变为"一个包带 N 颗芯片"：清单驱动加载、顶栏下拉切换、每芯片状态会话内互不干扰、工程文件记录芯片；`index.html` 从此不再因新增芯片而改动。
 
-**Architecture:** 沿用已 spike 验证的机制（原文在 `.claude\tmp\chip-pin-planner-spike-20261007\`，验收后删除）：`chips/manifest.js` 清单 → `js/loader.js` 顺序注入 `<script>` 并逐文件对账 → 数据文件 UMD 自注册 `CHIP_REGISTRY` → `js/app.js` 异步引导、按 `chipId` 分桶状态、下拉切换。引擎侧新增版本闸门（≤ 上限）与 `chipId / duplicateIdIndex` 纯函数；导出器新增 `readProjectChipId` 供导入路由。
+**Architecture:** 沿用已 spike 验证的机制（原文在 `tmp\chip-pin-planner-spike-20261007\`，验收后删除）：`chips/manifest.js` 清单 → `js/loader.js` 顺序注入 `<script>` 并逐文件对账 → 数据文件 UMD 自注册 `CHIP_REGISTRY` → `js/app.js` 异步引导、按 `chipId` 分桶状态、下拉切换。引擎侧新增版本闸门（≤ 上限）与 `chipId / duplicateIdIndex` 纯函数；导出器新增 `readProjectChipId` 供导入路由。
 
 **Tech Stack:** 原生 JS（ES5 风格，UMD-lite）；Node 断言式单测（`tests/engine.test.js`，追加式为三个新小节）；agent-browser 真实浏览器验收（`file://`）。
 
@@ -619,24 +619,24 @@ cp chips/wch-ch582m-qfn48.js chips/_tmp-demo.js
 agent-browser --session cpp reload
 agent-browser --session cpp wait --text "就绪（v1.5）"
 agent-browser --session cpp click "#left-panel div.res[data-rid='UART0']"
-agent-browser --session cpp download "#btn-export-proj" "C:/Users/MeowG/.claude/tmp/cpp-verify/proj.json"
+agent-browser --session cpp download "#btn-export-proj" "C:/Users/MeowG/tmp/cpp-verify/proj.json"
 agent-browser --session cpp select "#chip-select" "1"
-agent-browser --session cpp upload "#file-import" "C:/Users/MeowG/.claude/tmp/cpp-verify/proj.json"
+agent-browser --session cpp upload "#file-import" "C:/Users/MeowG/tmp/cpp-verify/proj.json"
 agent-browser --session cpp get text "#log"
 agent-browser --session cpp get text "#statusbar"
 ```
-（先 `mkdir -p "C:/Users/MeowG/.claude/tmp/cpp-verify"`。）
+（先 `mkdir -p "C:/Users/MeowG/tmp/cpp-verify"`。）
 
 Expected: 在"临时演示B"上导入后——`#log` 形如 `已载入工程：proj.json（CH582M · QFN48）`；statusbar 回到 `芯片: CH582M (QFN48)　已用 2`（**自动切到文件所属芯片**）。
 
 再验证两条兼容路径：
 
 ```bash
-node -e "const fs=require('fs');const p='C:/Users/MeowG/.claude/tmp/cpp-verify/proj.json';const o=JSON.parse(fs.readFileSync(p,'utf8'));delete o.chipId;fs.writeFileSync('C:/Users/MeowG/.claude/tmp/cpp-verify/proj-noid.json',JSON.stringify(o))"
-node -e "const fs=require('fs');const p='C:/Users/MeowG/.claude/tmp/cpp-verify/proj.json';const o=JSON.parse(fs.readFileSync(p,'utf8'));o.chipId='ghost-chip';fs.writeFileSync('C:/Users/MeowG/.claude/tmp/cpp-verify/proj-ghost.json',JSON.stringify(o))"
-agent-browser --session cpp upload "#file-import" "C:/Users/MeowG/.claude/tmp/cpp-verify/proj-noid.json"
+node -e "const fs=require('fs');const p='C:/Users/MeowG/tmp/cpp-verify/proj.json';const o=JSON.parse(fs.readFileSync(p,'utf8'));delete o.chipId;fs.writeFileSync('C:/Users/MeowG/tmp/cpp-verify/proj-noid.json',JSON.stringify(o))"
+node -e "const fs=require('fs');const p='C:/Users/MeowG/tmp/cpp-verify/proj.json';const o=JSON.parse(fs.readFileSync(p,'utf8'));o.chipId='ghost-chip';fs.writeFileSync('C:/Users/MeowG/tmp/cpp-verify/proj-ghost.json',JSON.stringify(o))"
+agent-browser --session cpp upload "#file-import" "C:/Users/MeowG/tmp/cpp-verify/proj-noid.json"
 agent-browser --session cpp get text "#log"
-agent-browser --session cpp upload "#file-import" "C:/Users/MeowG/.claude/tmp/cpp-verify/proj-ghost.json"
+agent-browser --session cpp upload "#file-import" "C:/Users/MeowG/tmp/cpp-verify/proj-ghost.json"
 agent-browser --session cpp get text "#log"
 agent-browser --session cpp get text "#statusbar"
 ```
@@ -700,8 +700,8 @@ agent-browser --session cpp get text "#statusbar"          # 预期 已用 0（�
 agent-browser --session cpp click "#chip-host g.pin[data-pin='PA6']"
 agent-browser --session cpp get count ".pin-menu"          # 预期 1（引脚菜单仍可用，真实点击路径）
 agent-browser --session cpp click "#statusbar"             # 关闭菜单
-agent-browser --session cpp download "#btn-export-csv" "C:/Users/MeowG/.claude/tmp/cpp-verify/csv.csv"
-ls -la "C:/Users/MeowG/.claude/tmp/cpp-verify/csv.csv" # 预期文件存在
+agent-browser --session cpp download "#btn-export-csv" "C:/Users/MeowG/tmp/cpp-verify/csv.csv"
+ls -la "C:/Users/MeowG/tmp/cpp-verify/csv.csv" # 预期文件存在
 ```
 
 - [ ] **Step 4: 清理临时件与原型目录**
@@ -712,7 +712,7 @@ rm chips/_tmp-demo.js
 manifest 删掉两行临时行 → reload 复核只剩 1 项、`就绪（v1.5）：可用芯片 1 颗。`。然后清原型（含用户模拟测试时的 `我的测试文件.js`，属临时目录，spec 附录已留档）：
 
 ```bash
-rm -rf "C:/Users/MeowG/.claude/tmp/chip-pin-planner-spike-20261007"
+rm -rf "C:/Users/MeowG/tmp/chip-pin-planner-spike-20261007"
 agent-browser --session cpp close
 cd /d/Code_Project/chip-pin-planner && git status --short   # 预期干净
 ```

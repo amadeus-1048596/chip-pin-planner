@@ -176,7 +176,7 @@ git commit -m "feat: resolveProjectTarget (name+package routing for chipId-less 
 
 - [ ] **Step 1: 审计（双引擎交叉）**
 
-用既有扫描脚本模式（参考 `.claude\tmp\cpp-opt2-20261010\scan_pb16.py`）对 `C:\Users\MeowG\Downloads\CH583DS1.PDF` 做两遍：
+用既有扫描脚本模式（参考 `tmp\cpp-opt2-20261010\scan_pb16.py`）对 `C:\Users\MeowG\Downloads\CH583DS1.PDF` 做两遍：
 
 - pypdf 与 pdfplumber 各抽一遍**全部 40 个 IO 引脚的复用功能描述块**，产出"CH582M vs CH583M"的逐脚 alts 差异两版清单；
 - 差异合并去重后与**图1-1 的 CH583M 标注**互证（已知锚点：PA0/SCK1、PA1/MOSI1、PA2/MISO1）；
@@ -503,7 +503,7 @@ git commit -m "feat(ui): project import routes by chip name+package when chipId 
 - Modify: `docs/reference/ch58x-family-diff.md`（收编：封装参数对照总表 + 三芯片差异总览）
 - Test: 浏览器真实路径门
 
-- [ ] **Step 1: 浏览器验证（agent-browser，会话 `cppv18`；截图存 `.claude\tmp\cpp-mpkg-20261015\`）**
+- [ ] **Step 1: 浏览器验证（agent-browser，会话 `cppv18`；截图存 `tmp\cpp-mpkg-20261015\`）**
 
 ```bash
 agent-browser --session cppv18 open "file:///D:/Code_Project/chip-pin-planner/index.html"

@@ -35,7 +35,7 @@ v1.4 现状：引擎/数据已分离（`chips/registry.js` + UMD 数据文件自
 - 清单注入启动 ✓；下拉 4 项（2 可用、2 置灰：版本闸门 + 文件缺失）✓；
 - 真实点击分配 → 切芯片 → 切回：状态各自保留 ✓；刷新清空 ✓；坏文件不拖垮其他芯片 ✓。
 
-- 原型与证据：`.claude\tmp\chip-pin-planner-spike-20261007\`（`index.html` 双击可玩；`_evidence/*.png` 截图；`模拟测试-使用说明.md` 测试清单）。
+- 原型与证据：`tmp\chip-pin-planner-spike-20261007\`（`index.html` 双击可玩；`_evidence/*.png` 截图；`模拟测试-使用说明.md` 测试清单）。
 - **遗留发现**：现有 `validateChip` 的版本闸门为"`schemaVersion` 必须 = 1"（严格相等）——正式实现改为"≤ 引擎支持上限"，见 §6。
 
 ## 4. 数据文件规范
@@ -123,5 +123,5 @@ window.CHIP_MANIFEST = ["chips/wch-ch582m-qfn48.js", /* 新增芯片在此加行
 
 ## 13. 附录
 
-- 可行性原型与截图：`.claude\tmp\chip-pin-planner-spike-20261007\`（含"模拟测试-使用说明.md"）；
+- 可行性原型与截图：`tmp\chip-pin-planner-spike-20261007\`（含"模拟测试-使用说明.md"）；
 - **分发路线（#4，2026-10-07 定）**：**三产物同 payload**——① GitHub Pages 在线版（永远最新）；② zip 绿色版（整文件夹解压、双击 `index.html`，可发桌面快捷方式）；③ **Inno Setup 安装器**（选安装路径、桌面/开始菜单快捷方式、安装完弹快速上手、自带卸载器、可设免管理员 per-user 安装）；另有 ④ **update.bat** 更新脚本（拉最新包更新现有目录；实现时机酌情）。**不做应用壳 exe**（Tauri/Electron）。

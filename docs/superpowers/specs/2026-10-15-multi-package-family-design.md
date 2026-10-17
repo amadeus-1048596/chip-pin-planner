@@ -30,7 +30,7 @@
 | 渲染器 | quad 家族参数化（pinsPerSide/pitch/body 驱动），QFN28（7/边）天然支持 | `js/render/package-svg.js`（`computePinLayout` 全参数化） |
 | 引擎 | 芯片无关；loader/buildChips/闸门均为多文件设计 | v1.5 架构 + 现测 |
 | 参考数据缺口 | `docs/reference/ch582-pin-table.txt` 仅覆盖 QFN48 的引脚表 | 文件表头（PAGE-3-TABLE 结构，48 脚） |
-| CH583M 增量 | 与 CH582M **同 QFN48 脚序**，手册图1-1 带 CH583M 专有标注：**+SPI1（PA0/SCK1、PA1/MOSI1、PA2/MISO1）** | CH583DS1 图1-1 提取件（`.claude\tmp\cpp-opt2-20261010\scan_out.txt`） |
+| CH583M 增量 | 与 CH582M **同 QFN48 脚序**，手册图1-1 带 CH583M 专有标注：**+SPI1（PA0/SCK1、PA1/MOSI1、PA2/MISO1）** | CH583DS1 图1-1 提取件（`tmp\cpp-opt2-20261010\scan_out.txt`） |
 | CH582F 子集 | QFN28；**逐脚引脚表中间一列即 QFN28 引脚号**（"无 P"=QFN28 未引出，如 PB0-PB3/PB5/PB6/PB9/PB16-21/PA0-PA3/PA6/PA7 均不在 28 脚上）——裁剪按此列初筛、图1-1 二十八脚排列表复核 | `docs/reference/ch582-pin-table.txt`（2026-10-15 实测确认列义） |
 | D1 原文（#1 决策） | "一份文件 = 一个具体封装型号……接受少量重复；家族共享机制等真痛了再加（YAGNI）" | `2026-10-07-multi-chip-data-distribution-design.md` §2 |
 

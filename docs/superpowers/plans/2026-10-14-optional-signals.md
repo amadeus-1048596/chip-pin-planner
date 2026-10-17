@@ -1368,7 +1368,7 @@ git commit -m "feat: CH582M data v2 - UART0 MODEM six optional signals, SPI0 sla
 
 - [ ] **Step 2: 浏览器真实路径验证（READ FIRST: 使用 agent-browser）**
 
-启动会话并逐项实测（每步用 snapshot/get attr 确认后再继续；截图存 `.claude\tmp\cpp-opt2-20261010\`）：
+启动会话并逐项实测（每步用 snapshot/get attr 确认后再继续；截图存 `tmp\cpp-opt2-20261010\`）：
 
 ```bash
 export AGENT_BROWSER_SESSION=cppv17
@@ -1471,7 +1471,7 @@ agent-browser --session cppv17 wait --text "就绪（v1.7）"
 3. 回归：点 SPI0 引脚（如 PA13）→ 菜单仍能整体改配且保留已加 SCS；「换回默认组」按钮路径同；
 4. 4a：左栏点 UART0 分配后，「＋」加 `DSR → PB1`（默认侧），点「改用映射组」→ 切换应成功且 **DSR 留在 PB1**（主组不搬 MODEM）；
    4b：刷新页面回到初始 → 左栏点 UART0（占 PB7/PB4）→ 在 SVG 上点 PA14 → 菜单「设为 GPIO…」设为 GPIO → 点「改用映射组」→ 应弹"无法切换：TXD 没有可用落脚点…"且**界面零变化**（改配前状态原样，Ctrl+Z 无操作可撤）；
-5. 截图留证 3-4 张到 `.claude\tmp\cpp-opt2-20261010\`。
+5. 截图留证 3-4 张到 `tmp\cpp-opt2-20261010\`。
 
 - [ ] **Step 3: 提交**
 
