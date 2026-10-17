@@ -29,6 +29,33 @@
 | `globalConfigs` | array | 系统开关 `{ id, label, default, claims:[引脚], note? }`（如调试口/RST/晶振） |
 | `resources` | array | 外设资源，见下 |
 
+## 封装渲染（package）
+
+封装图由 `js/render/package-svg.js` **参数化生成**，不需要为每个封装单独画 SVG。当前支持三类几何：
+
+| family | 覆盖的常见封装 | 关键参数 | 示例 |
+|---|---|---|---|
+| `quad` | QFN / DFN（四边）、LQFP / TQFP / QFP | `pinsPerSide`、`pitch`、`body`、`thermalPad?` | QFN32：8/边，pitch 0.5，body [5,5] |
+| `dual` | SOP / SOIC / TSSOP / DIP（两侧等数） | `pinsPerSide`、`pitch`、`body` | TSSOP20：10/边，pitch 0.65，body [4.4,6.5] |
+| `dual-split` | SOT-23-5/6 等两侧不等数 | `counts: [a,b]`、`pitch`、`body` | SOT-23-5：counts [3,2]，pitch 0.95 |
+
+**当前渲染约定（重要）：**
+
+- 引脚 1 固定在左上角，逆时针编号；
+- `quad`：左侧 1..n 从上到下，底边 n+1..2n 从左到右，右侧 2n+1..3n 从下到上，顶边 3n+1..4n 从右到左；
+- `dual` / `dual-split`：左侧从上到下，右侧从下到上；
+- `thermalPad` 在中心生成 EP，不参与数字脚号覆盖校验；
+- `style`、`pin1`、`sequence` 目前**不参与绘制**（保留字段）；遇到引脚 1 位置或方向不同的封装，需要先补渲染逻辑与测试。
+
+**新增一个封装族：**
+
+1. 按手册封装图确认引脚排列与编号；
+2. 在 `computePinLayout`（`js/render/package-svg.js`）中加分支；
+3. 参照 `tests/engine.test.js` 里 quad / dual / dual-split 的用例补布局测试；
+4. 用一颗真实芯片数据验证引脚号覆盖与显示。
+
+> 不建议预先堆很多没有对应芯片的封装。封装是数据驱动的，等真实芯片需求出现时再加最稳。
+
 ## resources 字段与约束
 
 | 字段 | 说明 |

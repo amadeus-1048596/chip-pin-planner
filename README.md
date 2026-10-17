@@ -1,5 +1,7 @@
 # 芯片引脚规划器（Chip Pin Planner）
 
+**中文** | [English](README.en.md)
+
 [![CI](https://github.com/amadeus-1048596/chip-pin-planner/actions/workflows/ci.yml/badge.svg)](https://github.com/amadeus-1048596/chip-pin-planner/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/amadeus-1048596/chip-pin-planner?display_name=tag)](https://github.com/amadeus-1048596/chip-pin-planner/releases)
 [![在线版](https://img.shields.io/badge/online-demo-brightgreen)](https://amadeus-1048596.github.io/chip-pin-planner/)
