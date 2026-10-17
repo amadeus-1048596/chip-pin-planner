@@ -36,7 +36,7 @@ Checking pin multiplexing before drawing a schematic is tedious: mux tables, map
 and mode restrictions are scattered across a datasheet. This tool puts that data on the
 package diagram, so you can see what a pin can do and what it conflicts with.
 
-Currently bundled: WCH CH58x (CH582M / CH582F / CH583M / CH585M / CH585F). The data format is vendor-neutral —
+Currently bundled: WCH CH58x (CH582M / CH582F / CH583M / CH584M / CH584X / CH584F / CH585M / CH585F). The data format is vendor-neutral —
 adding a chip is one data file plus one manifest line. Contributions and chip requests are welcome.
 
 ## Quick start
@@ -49,7 +49,7 @@ Chrome / Edge.
 
 ## 5-minute tour
 
-1. **Pick a chip** from the top-bar dropdown, grouped by vendor/series (currently the CH58x family: CH582M / CH582F / CH583M / CH585M / CH585F).
+1. **Pick a chip** from the top-bar dropdown, grouped by vendor/series (currently the CH58x family: CH582M / CH582F / CH583M / CH584M / CH584X / CH584F / CH585M / CH585F).
 2. **Assign pins**, two ways:
    - Click a pin on the package diagram and choose a function. Unavailable options are greyed out with a reason.
 
@@ -70,6 +70,9 @@ Full guide (Chinese): **[docs/user-guide.md](docs/user-guide.md)**.
 | CH58x | CH582M | QFN48 | 40 | Baseline (CH583DS1 V1.9) |
 | CH58x | CH582F | QFN28 | 20 | QFN28 subset of CH582M |
 | CH58x | CH583M | QFN48 | 40 | CH582M + SPI1 host |
+| CH58x | CH584M | QFN48 | 40 | Simplified CH585M: no USB HS/SPI1; NFC/LED/LCD retained; 96K RAM (CH585DS1 V1.6) |
+| CH58x | CH584X | QFN48 | 40 | Same pins/resources as CH584M; different memory configuration (CH585DS1 V1.6) |
+| CH58x | CH584F | QFN32 | 24 | No USB HS/SPI1/NFC/LED; LCD retained; 7 ADC channels (CH585DS1 V1.6) |
 | CH58x | CH585M | QFN48 | 40 | NFC / LED matrix / segment LCD / USB HS / SPI1 (CH585DS1 V1.6) |
 | CH58x | CH585F | QFN32 | 24 | No NFC/LED; LCD / USB HS retained; 7 ADC channels (CH585DS1 V1.6) |
 

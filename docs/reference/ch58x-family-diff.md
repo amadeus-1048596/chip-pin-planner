@@ -159,3 +159,9 @@ CH585M QFN48 的 1..48 脚名称与 CH582M **完全一致**（VDCID/VSW/VDD33…
 - 无 NFC/LED；LCD 保留 COM0-3 + 13 个可用 SEG（PB9 未引出；手册资源表标 14×4，按 QFN32 实际引出脚只能映射 13 个 SEG，**待复核**）。
 - UART0 的 groupSwitch 保留，DTR/DSR 单脚化并移除 groupKey；UART1-3/I2C 移除 groupSwitch；PWMX 移除 groupKey。
 - PA9 与 PB9 内部短接（PB9 未引出），已写入 PA9 的 pin note。
+
+**已实现：CH584M / CH584X / CH584F（2026-10-17）**
+
+- CH584M/X：QFN48、40 IO；在 CH585M 基础上去 USB HS/SPI1，保留 NFC/LED/LCD、USB FS、4 UART、1 I2C；引脚与 CH585M 同脚序。两者引脚/资源相同，仅存储配置不同。
+- CH584F：QFN32、24 IO；在 CH585F 基础上去 USB HS/SPI1/NFC/LED，保留 LCD、I2C、USB FS、4 UART；7 路 ADC（AIN0-5/AIN13）。
+- 三者均移除 U2D± 与 SCK1/MOSI1/MISO1 alts；CH584F 的 PA9 记录与 PB9 短接（PB9 未引出）。
