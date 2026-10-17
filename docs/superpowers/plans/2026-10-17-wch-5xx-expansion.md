@@ -8,7 +8,7 @@
 
 **Tech Stack:** 零依赖静态网页、UMD-lite、Node.js LTS 测试、手写 SVG 封装渲染、GitHub Actions（windows-latest）。
 
-**状态：** 待评审（2026-10-17）；评审通过前不写实现代码。
+**状态：** 执行中（2026-10-17；M0/M1 已完成，M2 进行中）。
 
 ---
 
@@ -63,15 +63,7 @@
 
 > 每本手册在 `meta.source` 中记录“型号 + 版本 + 日期”；执行时以 WCH 官网最新版本为准。
 
-### 1.1 优先级原则（官方图形化配置）
-
-公开资料中未找到 WCH 官方“图形化代码初始化配置工具”的完整支持清单；官方主推 MounRiver Studio + EVT 例程，WCHISPTool / WCH-LinkUtility 属于烧录/调试工具，不是代码初始化。若你手上有具体工具名与支持型号，以你的清单为准。
-
-- **P0（优先）**：官方没有图形化初始化配置工具的型号 / 冷门型号；
-- **P1（后置）**：官方已有此类工具的型号；有人需要时再加；
-- **P2（另行立项）**：其他厂商/系列（如 CH32V208）。
-
-> 本项目做的是引脚规划，不生成代码；即使官方有配置工具，本项目仍有互补价值，只是优先级后置。
+> **2026-10-17 用户决定：** 官方图形化配置工具的覆盖情况不再作为优先级依据，按废案处理。后续按手册可获得性、家族完整度和实际需求排序。
 
 ---
 
@@ -131,7 +123,7 @@
 | M8 | 可选：CH32V208 | 4 个数据文件 | 单独系列 |
 | M9 | 文档/README/系列图更新 | 支持芯片表、截图 | 随最近版本 |
 
-M2–M7 的顺序在 Task 0 确认官方工具覆盖后调整；**P0（官方无图形化配置）家族优先**。
+M2–M7 按家族顺序推进：CH584/585 → CH591/592 → CH595/596 → CH571/573 → CH570/572 → CH586/587。
 
 每个里程碑独立可回退；任一里程碑失败，不影响已发布版本。
 
@@ -141,12 +133,10 @@ M2–M7 的顺序在 Task 0 确认官方工具覆盖后调整；**P0（官方无
 
 **Files:** 无代码改动。
 
-- [ ] 确认 master 干净、三套测试全绿。
-- [ ] `git tag pre-wch-5xx && git push origin pre-wch-5xx`。
-- [ ] 确认官方图形化配置工具的名称、版本与支持型号（用户提供，或逐型号查 WCH 下载中心），记录到 `docs/reference/wch-tool-coverage.md`。
-- [ ] 按 P0/P1 调整 M2–M7 顺序；P0 家族优先。
-- [ ] 用户评审本计划；确认 M2 试点家族与是否包含 QFN26C3。
-- [ ] 评审通过后，再开始 Task 1。
+- [x] 确认 master 干净、三套测试全绿。
+- [x] `git tag pre-wch-5xx && git push origin pre-wch-5xx`。
+- [x] 用户评审本计划；确认 M2 试点家族与是否包含 QFN26C3。
+- [x] 开始 Task 1。
 
 ---
 
@@ -160,7 +150,7 @@ M2–M7 的顺序在 Task 0 确认官方工具覆盖后调整；**P0（官方无
 - Modify: `tests/engine.test.js`（新增分组/校验用例）
 - Modify: `docs/chip-data-schema.md`、`README.md`、`CONTRIBUTING.md`、`AGENTS.md`
 
-- [ ] **Step 1: 写失败测试（Loader 分组）**
+- [x] **Step 1: 写失败测试（Loader 分组）**
 
 在 `tests/engine.test.js` 的 Loader 测试区加入：
 
@@ -186,12 +176,12 @@ t("groupChips：缺 series 归入未分类", () => {
 });
 ```
 
-- [ ] **Step 2: 跑测试确认失败**
+- [x] **Step 2: 跑测试确认失败**
 
 Run: `node tests/engine.test.js`
 Expected: FAIL（`Loader.groupChips is not a function`）。
 
-- [ ] **Step 3: 实现 `groupChips`**
+- [x] **Step 3: 实现 `groupChips`**
 
 在 `js/loader.js` 中加入并导出：
 
@@ -212,12 +202,12 @@ function groupChips(chips) {
 
 返回对象改为 `{ classify, loadAll, buildChips, groupChips }`。
 
-- [ ] **Step 4: 跑测试确认通过**
+- [x] **Step 4: 跑测试确认通过**
 
 Run: `node tests/engine.test.js`
 Expected: 新增用例 PASS。
 
-- [ ] **Step 5: 写失败测试（model 校验）**
+- [x] **Step 5: 写失败测试（model 校验）**
 
 ```js
 t("validateChip：chip.series 若提供必须是非空字符串", () => {
@@ -231,7 +221,7 @@ t("validateChip：chip.series 若提供必须是非空字符串", () => {
 });
 ```
 
-- [ ] **Step 6: 跑测试确认失败，然后实现校验**
+- [x] **Step 6: 跑测试确认失败，然后实现校验**
 
 在 `js/engine/model.js` 的 `chip` 校验附近加入：
 
@@ -242,7 +232,7 @@ if (def.chip && def.chip.series !== undefined &&
 }
 ```
 
-- [ ] **Step 7: 接入 UI 分组**
+- [x] **Step 7: 接入 UI 分组**
 
 把 `js/app.js` 的 `updateChipSelect` 改为遍历 `CPP.Loader.groupChips(chips)`：
 
@@ -272,7 +262,7 @@ function updateChipSelect() {
 }
 ```
 
-- [ ] **Step 8: 给现有三颗芯片加 `series`**
+- [x] **Step 8: 给现有三颗芯片加 `series`**
 
 ```js
 chip: { vendor: "WCH", series: "CH58x", name: "CH582M", package: "QFN48" }
@@ -280,11 +270,11 @@ chip: { vendor: "WCH", series: "CH58x", name: "CH582F", package: "QFN28" }
 chip: { vendor: "WCH", series: "CH58x", name: "CH583M", package: "QFN48" }
 ```
 
-- [ ] **Step 9: 浏览器验收**
+- [x] **Step 9: 浏览器验收**
 
 打开 `index.html`，确认下拉出现 `WCH · CH58x` 分组、三颗芯片可选、切换正常、无 console 报错。
 
-- [ ] **Step 10: 更新文档并提交**
+- [x] **Step 10: 更新文档并提交**
 
 在 `docs/chip-data-schema.md` 的 `chip` 字段表加入 `series`；README 支持芯片表加“系列”列；CONTRIBUTING/AGENTS 注明新芯片填 `series`。
 
