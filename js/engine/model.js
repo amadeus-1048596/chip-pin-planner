@@ -19,6 +19,10 @@
       errors.push("id 若提供必须是非空字符串");
     }
     if (!def.chip || !def.chip.name) errors.push("缺少 chip.name");
+    if (def.chip && def.chip.series !== undefined &&
+        (typeof def.chip.series !== "string" || !def.chip.series.trim())) {
+      errors.push("chip.series 若提供必须是非空字符串");
+    }
     if (!def.package || !def.package.family) errors.push("缺少 package.family");
     if (!Array.isArray(def.pins) || def.pins.length === 0) errors.push("缺少 pins");
 

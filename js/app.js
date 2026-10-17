@@ -16,17 +16,23 @@
     var sel = document.getElementById("chip-select");
     if (!sel) return;
     sel.innerHTML = "";
-    chips.forEach(function (c, i) {
-      var opt = document.createElement("option");
-      opt.value = String(i);
-      if (c.ok) {
-        opt.textContent = chipLabel(c);
-        if (i === activeIdx) opt.selected = true;
-      } else {
-        opt.textContent = "⚠ " + c.file.split("/").pop() + " —— " + c.reason;
-        opt.disabled = true;
-      }
-      sel.appendChild(opt);
+    CPP.Loader.groupChips(chips).forEach(function (g) {
+      var og = document.createElement("optgroup");
+      og.label = g.label;
+      g.items.forEach(function (it) {
+        var c = it.chip, i = it.index;
+        var opt = document.createElement("option");
+        opt.value = String(i);
+        if (c.ok) {
+          opt.textContent = chipLabel(c);
+          if (i === activeIdx) opt.selected = true;
+        } else {
+          opt.textContent = "⚠ " + c.file.split("/").pop() + " —— " + c.reason;
+          opt.disabled = true;
+        }
+        og.appendChild(opt);
+      });
+      sel.appendChild(og);
     });
   }
   function activateChip(idx, silent) {

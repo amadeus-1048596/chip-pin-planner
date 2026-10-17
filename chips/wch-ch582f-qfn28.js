@@ -10,7 +10,7 @@
     id: "ch582f-qfn28",
     meta: { source: "CH583DS1 V1.9 (2025-04-10)", author: "MeowG", date: "2026-10-15",
             note: "QFN28（4×4mm/0.4mm）子集封装：20 个 IO 引出；UART2/UART3/I2C 无重映射组、UART0 MODEM 仅 DTR/DSR、RF 天线开关不适用、ADC 8 路；逐条差异见 docs/reference/ch58x-family-diff.md" },
-    chip: { vendor: "WCH", name: "CH582F", package: "QFN28" },
+    chip: { vendor: "WCH", series: "CH58x", name: "CH582F", package: "QFN28" },
     package: { family: "quad", style: "no-lead", pinsPerSide: 7, pitch: 0.4,
                body: [4, 4], pin1: "topLeft", sequence: "ccw-down", thermalPad: "GND (EP)" },
     pins: [

@@ -35,7 +35,7 @@
   schemaVersion: 2,
   id: "ti-cc2652-qfn48",                    // 唯一；型号-封装
   meta: { source: "TI CC2652 datasheet SWRS... Rev.X (2024-01)", author: "you", date: "2026-01-01" },
-  chip: { vendor: "TI", name: "CC2652", package: "QFN48" },
+  chip: { vendor: "TI", series: "CC26xx", name: "CC2652", package: "QFN48" },
   package: { family: "quad", style: "no-lead", pinsPerSide: 12, pitch: 0.4,
              body: [5, 5], pin1: "topLeft", sequence: "ccw-down" },
   pins: [ /* 每一脚 */ ],
@@ -46,7 +46,8 @@
 
 - `meta.source` **必填且如实**（手册型号 + 版本 + 日期），PR 会查；
 - `package` 的尺寸/pitch/脚数必须来自手册封装章节；不确定就留空并说明，不要造数；
-- `chip.name + package` 决定下拉显示，也用于旧工程文件路由。
+- `chip.name + package` 决定下拉显示，也用于旧工程文件路由；
+- `chip.series` 用于下拉分组（如 `CH58x`、`CC26xx`），建议填写；缺省归入“未分类”。
 
 ### 3. 填 `pins`
 

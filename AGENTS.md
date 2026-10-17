@@ -12,7 +12,7 @@
 ## 硬规则
 
 1. 零依赖、无构建、`file://` 直开；**不得引入任何包**，浏览器侧禁 ES modules（用 UMD-lite 尾巴）。
-2. 数据文件照抄 `chips/wch-ch582m-qfn48.js` 的骨架；字段语义见 `docs/chip-data-schema.md`。
+2. 数据文件照抄 `chips/wch-ch582m-qfn48.js` 的骨架；字段语义见 `docs/chip-data-schema.md`。新芯片填写 `chip.series`（厂商系列，用于下拉分组）。
 3. 一切 UI 文本中文；进 `innerHTML` 的字符串必须过 `escapeHtml`（`js/util.js`）。
 4. 数据以公开手册为准，逐脚填；不确定的值（如封装尺寸 pitch/body）宁缺勿造，并在 PR 里标注来源。
 5. 不要改 `js/engine/`，除非任务要求且附对应用例。

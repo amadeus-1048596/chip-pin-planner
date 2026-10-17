@@ -49,7 +49,7 @@ Chrome / Edge.
 
 ## 5-minute tour
 
-1. **Pick a chip** from the top-bar dropdown (currently CH582M / CH582F / CH583M).
+1. **Pick a chip** from the top-bar dropdown, grouped by vendor/series (currently the CH58x family: CH582M / CH582F / CH583M).
 2. **Assign pins**, two ways:
    - Click a pin on the package diagram and choose a function. Unavailable options are greyed out with a reason.
 
@@ -65,11 +65,11 @@ Full guide (Chinese): **[docs/user-guide.md](docs/user-guide.md)**.
 
 ## Supported chips
 
-| Model | Package | IO | Notes |
-|---|---|---|---|
-| CH582M | QFN48 | 40 | Baseline (CH583DS1 V1.9) |
-| CH582F | QFN28 | 20 | QFN28 subset of CH582M |
-| CH583M | QFN48 | 40 | CH582M + SPI1 host |
+| Series | Model | Package | IO | Notes |
+|---|---|---|---|---|
+| CH58x | CH582M | QFN48 | 40 | Baseline (CH583DS1 V1.9) |
+| CH58x | CH582F | QFN28 | 20 | QFN28 subset of CH582M |
+| CH58x | CH583M | QFN48 | 40 | CH582M + SPI1 host |
 
 ![CH582F QFN28](docs/images/ch582f-qfn28.png)
 

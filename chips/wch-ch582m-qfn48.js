@@ -9,7 +9,7 @@
     schemaVersion: 2,
     id: "ch582m-qfn48",
     meta: { source: "CH583DS1 V1.9 (2025-04-10)", author: "MeowG", date: "2026-10-06" },
-    chip: { vendor: "WCH", name: "CH582M", package: "QFN48" },
+    chip: { vendor: "WCH", series: "CH58x", name: "CH582M", package: "QFN48" },
     package: { family: "quad", style: "no-lead", pinsPerSide: 12, pitch: 0.35,
                body: [5, 5], pin1: "topLeft", sequence: "ccw-down", thermalPad: "GND (EP)" },
     pins: [

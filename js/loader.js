@@ -76,5 +76,19 @@
     return chips;
   }
 
-  return { classify: classify, loadAll: loadAll, buildChips: buildChips };
+  // 纯函数：按 vendor · series 分组（组顺序 = 首次出现顺序；组内保持原 index）
+  function groupChips(chips) {
+    var groups = [], byKey = {};
+    (chips || []).forEach(function (c, i) {
+      var chip = (c && c.def && c.def.chip) || {};
+      var vendor = chip.vendor || "其他";
+      var series = chip.series || "未分类";
+      var key = vendor + " · " + series;
+      if (!byKey[key]) { byKey[key] = { key: key, label: key, items: [] }; groups.push(byKey[key]); }
+      byKey[key].items.push({ chip: c, index: i });
+    });
+    return groups;
+  }
+
+  return { classify: classify, loadAll: loadAll, buildChips: buildChips, groupChips: groupChips };
 });
