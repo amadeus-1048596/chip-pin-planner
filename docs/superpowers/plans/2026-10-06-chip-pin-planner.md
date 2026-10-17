@@ -858,7 +858,7 @@ window.CHIP_REGISTRY = window.CHIP_REGISTRY || [];
   "use strict";
   return {
     schemaVersion: 1,
-    meta: { source: "CH583DS1 V1.9 (2025-04-10)", author: "Xi.Wang33", date: "2026-10-06" },
+    meta: { source: "CH583DS1 V1.9 (2025-04-10)", author: "MeowG", date: "2026-10-06" },
     chip: { vendor: "WCH", name: "CH582M", package: "QFN48" },
     package: { family: "quad", style: "no-lead", pinsPerSide: 12, pitch: 0.35,
                body: [5, 5], pin1: "topLeft", sequence: "ccw-down", thermalPad: "GND (EP)" },
