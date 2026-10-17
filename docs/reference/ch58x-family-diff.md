@@ -104,3 +104,51 @@
 - **去 groupKey**：UART0_MODEM（DTR/DSR）、PWMX（PWM4/5/7/9 各自只剩单脚，同切位已无意义）。
 - **删除 globalConfigs**：`rf_ant_sw`（PB16-21 全部未引出）；debug（PB14/15）、rst（PB23）、xtal32k（PA10/PA11）保留。
 - **保留不动**：SPI0（含映射组与 4 个模式）、UART1、TMR0/TMR1/TMR2、PWM10/PWM11、AIN0-5/AIN12/AIN13、USB1、USB2、GPIO。
+
+## 3. CH585M vs CH582M（QFN48 同脚序）
+
+来源：CH585DS1 V1.6 (2025-12-25)，1.1/1.2 逐脚表 + p1 资源表 + 封装章。
+
+### 3.1 脚序
+
+CH585M QFN48 的 1..48 脚名称与 CH582M **完全一致**（VDCID/VSW/VDD33… PA10），EP 同为 GND。这意味着可以直接以 CH582M 为基线做差异数据锁。
+
+### 3.2 复用差异（逐脚表核对）
+
+| 引脚 | CH582M alts | CH585M alts | 说明 |
+|---|---|---|---|
+| PA0 | AIN9 | **SCK1, LED0**, AIN9 | +SPI1 时钟、LED 数据 0 |
+| PA1 | AIN8 | **MOSI1, LED1**, AIN8 | +SPI1 MOSI、LED1 |
+| PA2 | TMR3_, AIN7 | **MISO1, TMR3_, RI, LED2**, AIN7 | +SPI1 MISO、UART0 RI 迁到 PA2、LED2 |
+| PA3 | AIN6 | **LED3**, AIN6 | +LED3 |
+| PA4 | RXD3, AIN0 | RXD3, **LEDC**, AIN0 | +LED 点阵时钟 |
+| PA5 | TXD3, AIN1 | TXD3, **LED4**, AIN1 | +LED4 |
+| PA6 | RXD2, PWM4_, AIN10 | RXD2, PWM4_, **LED5**, AIN10 | +LED5 |
+| PA7 | TXD2, PWM5_, AIN11 | TXD2, PWM5_, **LED6**, AIN11 | +LED6 |
+| PA8 | RXD1, AIN12 | RXD1, **LED7**, AIN12 | +LED7 |
+| PB2 | RI, PWM8_ | PWM8_ | RI 迁到 PA2 |
+| PB8 | — | **NFCM** | +NFC 模拟输入 |
+| PB9 | — | **NFCI** | +NFC 模拟输入 |
+| PB16 | — | **NFC-** | +NFC 天线 N |
+| PB17 | — | **NFC+** | +NFC 天线 P |
+
+其余引脚 alts 与 CH582M 相同；PB10/PB11 为 USB FS（UD±），PB12/PB13 为 USB HS（U2D±），与 CH582M 的 USB1/USB2 位置一致，仅资源标签区分。
+
+### 3.3 资源与配置差异
+
+- **新增资源**：SPI1（仅主机：PA0/PA1/PA2）、NFC（PB9/PB8/PB17/PB16）、LED 点阵屏（LEDC=PA4 必选，LED0-7 可选）、段式 LCD（COM0-3=PB4-PB7 必选，SEG0-27 可选）、USB HS（PB12/PB13，单列）。
+- **UART0**：RI 由 PB2 改为 PA2（仅 CH585M 引出 PA2；QFN32/26/20 上无 PA2，RI 不可用）。
+- **globalConfigs**：删除 `rf_ant_sw`（CH585 无 PB16-21 六脚 RF 开关）；保留 debug（PB14/PB15）、rst（PB23）、xtal32k（PA10/PA11）。
+- **封装**：QFN48 5×5mm，pitch 0.35mm。
+
+### 3.4 同族变体（后续任务）
+
+| 型号 | 封装 | 关键裁剪（p1 资源表） |
+|---|---|---|
+| CH585F | QFN32 4×4/0.4 | 1 SPI、无 NFC、7+1 ADC、7 TouchKey、24 GPIO、LCD 14×4；PA9/PB9 内部短接（禁止同时输出） |
+| CH585C | QFN26C3 3×3/0.4 | 2 UART、1 SPI、无 I2C、4+5 PWM、4+1 ADC、无 TouchKey、17 GPIO、USB FS+HS；PA9/PB9 内部短接 |
+| CH585D | QFN20 3×3/0.4 | 2 UART、1 SPI、无 I2C、4+3 PWM、4+1 ADC、无 TouchKey、12 GPIO、USB FS+HS |
+| CH584M/X | QFN48 5×5/0.35 | 无 USB HS/SPI1，RAM 96K；保留 NFC/LED/LCD、4 UART、1 SPI、1 I2C |
+| CH584F | QFN32 4×4/0.4 | 无 USB HS/SPI1/NFC，7+1 ADC、7 TouchKey、24 GPIO、LCD 14×4 |
+
+> 变体数据必须按各自封装引脚表逐脚裁剪，不能只按资源表删资源。
