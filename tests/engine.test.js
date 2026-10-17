@@ -1701,20 +1701,21 @@ t("CH582F：I2C / UART3 映射组语义正确移除", () => {
 
 console.log("\n=== v1.8-4 / M2: 芯片对账 ===");
 
-t("清单：四颗芯片按 M→F→583M→585M 顺序全部可用、id 唯一", () => {
+t("清单：五颗芯片按 M→F→583M→585M→585F 顺序全部可用、id 唯一", () => {
   const defs = [
     require("../chips/wch-ch582m-qfn48.js"),
     require("../chips/wch-ch582f-qfn28.js"),
     require("../chips/wch-ch583m-qfn48.js"),
-    require("../chips/wch-ch585m-qfn48.js")
+    require("../chips/wch-ch585m-qfn48.js"),
+    require("../chips/wch-ch585f-qfn32.js")
   ];
   const chips = Loader.buildChips(defs.map((d, i) => ({ file: "chips/x" + i + ".js", def: d })), Model);
-  assert.deepStrictEqual(chips.map(c => c.ok), [true, true, true, true], JSON.stringify(chips.map(c => c.reason)));
-  assert.deepStrictEqual(chips.map(c => c.chipId), ["ch582m-qfn48", "ch582f-qfn28", "ch583m-qfn48", "ch585m-qfn48"]);
-  assert.deepStrictEqual(chips.map(c => c.def.chip.name), ["CH582M", "CH582F", "CH583M", "CH585M"]);
+  assert.deepStrictEqual(chips.map(c => c.ok), [true, true, true, true, true], JSON.stringify(chips.map(c => c.reason)));
+  assert.deepStrictEqual(chips.map(c => c.chipId), ["ch582m-qfn48", "ch582f-qfn28", "ch583m-qfn48", "ch585m-qfn48", "ch585f-qfn32"]);
+  assert.deepStrictEqual(chips.map(c => c.def.chip.name), ["CH582M", "CH582F", "CH583M", "CH585M", "CH585F"]);
 });
 
-t("manifest：按 M→F→583M→585M 列出四份数据文件（顺序即下拉顺序），文件均存在", () => {
+t("manifest：按 M→F→583M→585M→585F 列出五份数据文件（顺序即下拉顺序），文件均存在", () => {
   const fs = require("fs");
   const src = fs.readFileSync(__dirname + "/../chips/manifest.js", "utf8");
   const m = src.match(/\[([^\]]*)\]/);
@@ -1724,7 +1725,8 @@ t("manifest：按 M→F→583M→585M 列出四份数据文件（顺序即下拉
     "chips/wch-ch582m-qfn48.js",
     "chips/wch-ch582f-qfn28.js",
     "chips/wch-ch583m-qfn48.js",
-    "chips/wch-ch585m-qfn48.js"
+    "chips/wch-ch585m-qfn48.js",
+    "chips/wch-ch585f-qfn32.js"
   ]);
   files.forEach(f => assert.ok(fs.existsSync(__dirname + "/../" + f), f + " 应存在"));
 });
@@ -1787,6 +1789,45 @@ t("CH585M 数据锁：QFN48 脚序与 CH582M 一致；alts 差异仅为 NFC/LED/
     assert.deepStrictEqual(p.alts, EXC[p.name] || base.alts, p.name);
   });
   assert.deepStrictEqual(CHIP585.globalConfigs.map(c => c.id), ["debug", "rst", "xtal32k"]);
+});
+
+console.log("\n=== M2: CH585F QFN32 ===");
+const CHIP585F = require("../chips/wch-ch585f-qfn32.js");
+
+t("CH585F：validateChip 通过，32 脚 + EP，24 IO", () => {
+  assert.strictEqual(CHIP585F.id, "ch585f-qfn32");
+  assert.strictEqual(CHIP585F.chip.name, "CH585F");
+  assert.strictEqual(CHIP585F.chip.series, "CH58x");
+  assert.strictEqual(CHIP585F.package.pinsPerSide, 8);
+  assert.strictEqual(CHIP585F.pins.length, 33);
+  const v = Model.validateChip(CHIP585F);
+  assert.strictEqual(v.ok, true, JSON.stringify(v.errors));
+  const s = Avail.defaultState(CHIP585F);
+  assert.strictEqual(Avail.countIO(CHIP585F, s).total, 24);
+});
+
+t("CH585F：无 SPI1/NFC/LED，保留 I2C/LCD/USB HS；7 路 ADC", () => {
+  const ids = CHIP585F.resources.map(r => r.id);
+  ["SPI1", "NFC", "LED"].forEach(id => assert.ok(!ids.includes(id), id));
+  ["I2C", "LCD", "USB_HS"].forEach(id => assert.ok(ids.includes(id), id));
+  const adc = CHIP585F.resources.filter(r => r.category === "ADC");
+  assert.strictEqual(adc.length, 7);
+  const pa9 = CHIP585F.pins.find(p => p.name === "PA9");
+  assert.ok(/PB9/.test(pa9.note || ""), "PA9 应记录与 PB9 短接");
+});
+
+t("CH585F 数据锁：QFN32 未引出脚与 NFC/LED alts 已移除", () => {
+  const names = new Set(CHIP585F.pins.map(p => p.name));
+  ["PA0", "PA1", "PA2", "PA3", "PA6", "PA7", "PA8", "PB9", "PB0", "PB1", "PB2", "PB3", "PB18", "PB19", "PB20", "PB21"].forEach(n => {
+    assert.ok(!names.has(n), n + " 不应在 QFN32");
+  });
+  const byName = {};
+  CHIP585F.pins.forEach(p => { byName[p.name] = p; });
+  assert.deepStrictEqual(byName.PB8.alts, []);
+  assert.deepStrictEqual(byName.PB17.alts, []);
+  assert.deepStrictEqual(byName.PB16.alts, []);
+  assert.deepStrictEqual(byName.PA4.alts, ["RXD3", "AIN0"]);
+  assert.deepStrictEqual(byName.PA5.alts, ["TXD3", "AIN1"]);
 });
 
 console.log("\n=== v1.8-5: 终审修复（I1/I2） ===");
