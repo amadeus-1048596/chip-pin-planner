@@ -48,9 +48,15 @@ jobs:
       - name: Release notes
         shell: powershell
         run: |
-          $prev = git describe --tags --abbrev=0 "HEAD^" 2>$null
-          if (-not $prev) { $prev = git rev-list --max-parents=0 HEAD }
-          git log "$prev..HEAD" --pretty="- %s" | Out-File -Encoding utf8 notes.md
+          $prev = $null
+          if (git rev-parse --verify --quiet "HEAD^") {
+            $prev = @(git tag --merged "HEAD^" --list "v*" --sort=-v:refname)[0]
+          }
+          if ($prev) {
+            git log "$prev..HEAD" --pretty="- %s" | Out-File -Encoding utf8 notes.md
+          } else {
+            git log HEAD --pretty="- %s" | Out-File -Encoding utf8 notes.md
+          }
       - name: Create release
         shell: powershell
         env:
