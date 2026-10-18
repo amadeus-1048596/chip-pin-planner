@@ -36,7 +36,7 @@ Checking pin multiplexing before drawing a schematic is tedious: mux tables, map
 and mode restrictions are scattered across a datasheet. This tool puts that data on the
 package diagram, so you can see what a pin can do and what it conflicts with.
 
-Currently bundled: WCH **CH58x (10)** and **CH59x (7)**, 17 chips in total. The data format is vendor-neutral —
+Currently bundled: WCH **CH58x (10)** and **CH59x (11)**, 21 chips in total. The data format is vendor-neutral —
 adding a chip is one data file plus one manifest line. Contributions and chip requests are welcome.
 
 ## Quick start
@@ -49,7 +49,7 @@ Chrome / Edge.
 
 ## 5-minute tour
 
-1. **Pick a chip** from the top-bar dropdown, grouped by vendor/series (currently WCH CH58x with 10 chips and CH59x with 7; see the table below).
+1. **Pick a chip** from the top-bar dropdown, grouped by vendor/series (currently WCH CH58x with 10 chips and CH59x with 11; see the table below).
 2. **Assign pins**, two ways:
    - Click a pin on the package diagram and choose a function. Unavailable options are greyed out with a reason.
 
@@ -84,6 +84,10 @@ Full guide (Chinese): **[docs/user-guide.md](docs/user-guide.md)**.
 | CH59x | CH591F | QFN28 | 20 | 2 UART / 1 SPI / 6 ADC / LCD 16×4 / USB device; no I2C/TouchKey (CH592DS1 V1.9) |
 | CH59x | CH591D | QFN20 | 12 | 2 UART / 1 SPI / 4 ADC / USB device; no I2C/TouchKey/LCD (CH592DS1 V1.9) |
 | CH59x | CH591R | TSSOP16 | 10 | 2 UART / 1 SPI / 4 ADC; no USB/I2C/TouchKey/LCD (CH592DS1 V1.9) |
+| CH59x | CH595X | QFN32 | 24 | 4 UART / 1 SPI / 1 I2C / 8 PWM / 14 ADC / 14 TouchKey / LCD 20×4 / USB host+device (CH595DS1 V1.1) |
+| CH59x | CH595F | QFN28 | 20 | 4 UART / 1 SPI / 1 I2C / 6 PWM / 10 ADC / 10 TouchKey / LCD 16×4 / USB (CH595DS1 V1.1) |
+| CH59x | CH595D | QFN20 | 12 | 2 UART / 1 SPI / 1 I2C / 3 PWM / 6 ADC / 6 TouchKey / LCD 8×4 / USB (CH595DS1 V1.1) |
+| CH59x | CH596D | QFN20 | 15 | 2 UART / 1 SPI / 1 I2C / 4 PWM / 8 ADC / 8 TouchKey; no USB/LCD; 1.2V single-cell (CH596DS1 V1.1) |
 
 ![CH582F QFN28](docs/images/ch582f-qfn28.png)
 

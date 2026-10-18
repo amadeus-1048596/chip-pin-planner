@@ -1,4 +1,4 @@
-# CH59x 家族差异表（CH592X / CH592F / CH592A / CH592D / CH591F / CH591D / CH591R）
+# CH59x 家族差异表（CH592X/F/A/D、CH591F/D/R、CH595X/F/D、CH596D）
 
 事实来源：**CH592DS1 V1.9 (2025-12-24)**，1.1 引脚排列、1.2 逐脚表、p1 型号资源表、第 9/10/12/13/15/16/17 章。
 官方页面：<https://www.wch-ic.com/downloads/CH592DS1.PDF.html>；本次审计使用 OpenWCH 官方仓库镜像 `openwch/ch592/Datasheet/CH592DS1_zh.PDF`（SHA-256 `348e243d…`）。
@@ -50,3 +50,29 @@ QFN 的 pin 1 左下由 1.1 各分图核对（图中 EP 标 0，pin 1 紧邻其�
 ## 4. 测试与锁定
 
 `tests/engine.test.js` 的 M3 用例锁定：各型号 validateChip、引脚总数、IO 数、UART/SPI/I2C/TMR/PWM/ADC/LCD/USB 资源集合、CH591 的 TouchKey 标签移除、CH591R 无 EP/热焊盘、CH592X pin1 左下。
+
+## 5. CH595 家族（CH595X / CH595F / CH595D）
+
+事实来源：**CH595DS1 V1.1 (2026-03-13)**，186 页；与 CH596 是两本独立手册。文件 SHA-256 `b774b264…`。
+
+- **脚序与 CH592X/F/D 完全一致**（QFN32/28/20，pin1 左下），可直接按封装裁剪。
+- 差异：
+  - Flash 240K（CH592 为 448K）；ADC 外部通道 **14 / 10 / 6**（CH592 为 12 / 8 / 4）；TouchKey **14 / 10 / 6**。
+  - 调试口在 **PA12/PA13（SWDIO/SWCLK）**，不是 CH592 的 PB14/PB15；与 SPI0、PWM4/5、LCD SEG8/9、AIN2/3 共用，使用需关闭调试。
+  - 引脚复用增加 KEYSCAN[0-4]、LED/LED_CLK、ENCCAP 等；已写入 alts，供人工查看。
+  - **AIN6 = PA10**：1.2 引脚表 PA10 未列 AIN6，但型号表 14+1/10+1/6+1 与 QFN20 可用 AIN 计数均要求这一路；已按 PA10 保留并标注待复核。
+  - CH595D 的 2 组定时器按可用脚取 **TMR1/TMR2**（TMR0 的 PA9/PB23 未引出）；UART0/1；LCD 8 段。
+- 数据文件：`wch-ch595x-qfn32.js`、`wch-ch595f-qfn28.js`、`wch-ch595d-qfn20.js`。
+
+## 6. CH596 家族（CH596D）
+
+事实来源：**CH596DS1 V1.1 (2026-03-13)**，151 页；单节 1.2V BLE MCU。文件 SHA-256 `c3989fa7…`。
+
+- QFN20，**15 GPIO**；电源为 **VDD15/VIO15**（无 VDCID/VSW/VDCIA）；无 USB、无 LCD；无独立复位脚（PB23 未引出）。
+- 资源：2 UART、1 SPI、1 I2C、3 定时器（TMR0-2）、4 路 PWM4-11（PWM4/5/8/10）、8 路 ADC/TouchKey（AIN2/3/4/5/6/9/12/13）、BLE。
+- 调试口 **PA12/PA13（SWDIO/SWCLK）**；32.768kHz 晶振在 PA10/PA11；均与 SPI/PWM/ADC 有共用，数据已加 note。
+- **审计裁定**：
+  - CH596 的 PA11 复用列不含 AIN7，型号表也是 8 路 ADC；因此 **不建 AIN7**（与 CH595 不同）。
+  - PB6 同时提供 AIN9/PWM8/UART0_RTS；从 CH595F 裁剪时这三项会被丢掉，已在 CH596D 中显式补回。
+  - 无 USB/LCD 资源；`rst` 配置因 PB23 未引出而移除。
+- 数据文件：`wch-ch596d-qfn20.js`。
