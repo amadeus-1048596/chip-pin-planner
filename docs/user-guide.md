@@ -133,6 +133,6 @@
 
 ## 数据来源与边界
 
-- 芯片数据来自公开数据手册（CH58x：CH583DS1 / CH585DS1 / CH587DS1；CH59x：CH592DS1 / CH595DS1 / CH596DS1；CH57x：CH573DS1 / CH572DS1），逐脚核对；
+- 芯片数据来自公开数据手册（CH58x：CH583DS1 / CH585DS1 / CH587DS1；CH59x：CH592DS1 / CH595DS1 / CH596DS1；CH57x：CH573DS1 / CH572DS1；CH32V：CH32V208DS0），逐脚核对；
 - 工具只做资源规划与冲突校验，**不生成代码**；
 - 新增芯片 / 修正数据：见 [CONTRIBUTING.md](../CONTRIBUTING.md)，字段定义见 [chip-data-schema.md](chip-data-schema.md)。

@@ -8,7 +8,7 @@
 
 **Tech Stack:** 零依赖静态网页、UMD-lite、Node.js LTS 测试、手写 SVG 封装渲染、GitHub Actions（windows-latest）。
 
-**状态：** 执行中（2026-10-18；M0-M7 全部完成，WCH 共 40 颗芯片）。
+**状态：** 已完成（2026-10-18；M0-M8 全部完成，WCH 共 44 颗芯片）。
 
 ---
 
@@ -570,6 +570,7 @@ git commit -m "feat(chips): 加入 CH585/CH584 家族（QFN48/32/26C3/20、QFN48
 - 另属 CH32V 系列，不阻塞 5xx；
 - 4 个封装：QFN28/QFN48/LQFP64M/QFN68；
 - 建议在 5xx 全部完成后单独立项，`series: "CH32V"`。
+- **M8 完成（2026-10-18）**：CH32V208GBU6/CBU6/RBT6/WBU6 四个封装已加入，`series: "CH32V"`；审计记录见 `docs/reference/ch32v208-family-diff.md`。
 
 ---
 

@@ -36,7 +36,7 @@ Checking pin multiplexing before drawing a schematic is tedious: mux tables, map
 and mode restrictions are scattered across a datasheet. This tool puts that data on the
 package diagram, so you can see what a pin can do and what it conflicts with.
 
-Currently bundled: WCH **CH58x (16)**, **CH59x (11)** and **CH57x (13)**, 40 chips in total. The data format is vendor-neutral —
+Currently bundled: WCH **CH58x (16)**, **CH59x (11)**, **CH57x (13)** and **CH32V (4)**, 44 chips in total. The data format is vendor-neutral —
 adding a chip is one data file plus one manifest line. Contributions and chip requests are welcome.
 
 ## Quick start
@@ -49,7 +49,7 @@ Chrome / Edge.
 
 ## 5-minute tour
 
-1. **Pick a chip** from the top-bar dropdown, grouped by vendor/series (currently WCH CH58x with 16 chips, CH59x with 11 and CH57x with 13; see the table below).
+1. **Pick a chip** from the top-bar dropdown, grouped by vendor/series (currently WCH CH58x with 16 chips, CH59x with 11, CH57x with 13 and CH32V with 4; see the table below).
 2. **Assign pins**, two ways:
    - Click a pin on the package diagram and choose a function. Unavailable options are greyed out with a reason.
 
@@ -107,6 +107,10 @@ Full guide (Chinese): **[docs/user-guide.md](docs/user-guide.md)**.
 | CH58x | CH587D | QFN20 | 12 | 2 UART / 1 SPI / I2C / USB FS+HS / ARGB / 5 ADC (CH587DS1 V1.0) |
 | CH58x | CH586W | QFN68X7 | 58 | CH587W without USB HS/PD; NFC / QSPI / ARGB / LED / LCD 32×4 / 22 ADC (CH587DS1 V1.0) |
 | CH58x | CH586M | QFN48 | 40 | CH587M without USB HS/PD/NFC; QSPI / ARGB / LED / LCD 28×4 / 16 ADC (CH587DS1 V1.0) |
+| CH32V | CH32V208GBU6 | QFN28 | 20 | 2 UART / 1 SPI / 1 I2C / CAN / 8 ADC/TKey / USBD+USBFS / 10M ETH (CH32V208DS0 V2.7) |
+| CH32V | CH32V208CBU6 | QFN48 | 35 | 4 UART / 2 SPI / 2 I2C / CAN / 10 ADC/TKey / USBD+USBFS; no ETH (CH32V208DS0 V2.7) |
+| CH32V | CH32V208RBT6 | LQFP64M | 49 | 4 UART / 2 SPI / 2 I2C / CAN / 16 ADC/TKey / USBD+USBFS / 10M ETH (CH32V208DS0 V2.7) |
+| CH32V | CH32V208WBU6 | QFN68 | 53 | 4 UART / 2 SPI / 2 I2C / CAN / 16 ADC/TKey / USBD+USBFS / 10M ETH (CH32V208DS0 V2.7) |
 
 ![CH582F QFN28](docs/images/ch582f-qfn28.png)
 
@@ -183,7 +187,7 @@ Key design choices:
 ## Development
 
 ```bash
-node tests/engine.test.js   # engine + chip data (247 assertions)
+node tests/engine.test.js   # engine + chip data (252 assertions)
 node tests/fuzz.js          # 8000 random operations + invariants
 node tests/dist.test.js     # release artifacts / zip / installer / update.bat (Windows PowerShell)
 ```
