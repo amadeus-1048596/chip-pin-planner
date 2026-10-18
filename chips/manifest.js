@@ -20,5 +20,9 @@ window.CHIP_MANIFEST = [
   "chips/wch-ch595x-qfn32.js",
   "chips/wch-ch595f-qfn28.js",
   "chips/wch-ch595d-qfn20.js",
-  "chips/wch-ch596d-qfn20.js"
+  "chips/wch-ch596d-qfn20.js",
+  "chips/wch-ch573f-qfn28.js",
+  "chips/wch-ch571f-qfn28.js",
+  "chips/wch-ch571r-tssop16.js",
+  "chips/wch-ch571k-essop10.js"
 ];

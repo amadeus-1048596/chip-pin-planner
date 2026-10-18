@@ -33,7 +33,7 @@
 画板前查引脚复用比较麻烦：复用表、映射位和模式限制分散在数据手册的不同章节。
 这个工具把这些数据铺在封装图上，点引脚就能看到能做什么、和谁冲突。
 
-目前内置 WCH **CH58x（10 颗）** 与 **CH59x（11 颗）**，共 **21 颗**芯片；工具本身不绑定厂商，新增芯片 = 一个数据文件 + 清单一行。欢迎补充其他型号或直接提需求。
+目前内置 WCH **CH58x（10 颗）**、**CH59x（11 颗）** 与 **CH57x（4 颗）**，共 **25 颗**芯片；工具本身不绑定厂商，新增芯片 = 一个数据文件 + 清单一行。欢迎补充其他型号或直接提需求。
 
 ## 快速开始
 
@@ -45,7 +45,7 @@
 
 ## 5 分钟上手
 
-1. **选芯片**：顶栏下拉按厂商/系列分组，选择型号与封装（当前内置 WCH CH58x 10 颗、CH59x 11 颗，详见下表）。
+1. **选芯片**：顶栏下拉按厂商/系列分组，选择型号与封装（当前内置 WCH CH58x 10 颗、CH59x 11 颗、CH57x 4 颗，详见下表）。
 2. **分配引脚**，两种方式任选：
    - 点封装图上的引脚 → 从菜单选功能。不可用项会置灰并说明原因。
 
@@ -84,6 +84,10 @@
 | CH59x | CH595F | QFN28 | 20 | 4 UART / 1 SPI / 1 I2C / 6 PWM / 10 ADC / 10 TouchKey / LCD 16×4 / USB（CH595DS1 V1.1） |
 | CH59x | CH595D | QFN20 | 12 | 2 UART / 1 SPI / 1 I2C / 3 PWM / 6 ADC / 6 TouchKey / LCD 8×4 / USB（CH595DS1 V1.1） |
 | CH59x | CH596D | QFN20 | 15 | 2 UART / 1 SPI / 1 I2C / 4 PWM / 8 ADC / 8 TouchKey；无 USB/LCD；单节 1.2V（CH596DS1 V1.1） |
+| CH57x | CH573F | QFN28 | 20 | 4 UART / 1 SPI / 4 TMR / 6 PWM / 8 ADC / 8 TouchKey / USB（CH573DS1 V2.3） |
+| CH57x | CH571F | QFN28 | 20 | 2 UART / 1 SPI / 4 TMR / 6 ADC / USB；无 PWM4-11/Touch/I2C/LCD（CH573DS1 V2.3） |
+| CH57x | CH571R | TSSOP16 | 10 | 2 UART / 1 SPI / 4 TMR / 4 ADC / USB 设备；无 PWM4-11/Touch/I2C/LCD（CH573DS1 V2.3） |
+| CH57x | CH571K | ESSOP10 | 4 | 1 UART / 1 SPI / 4 ADC；无 Timer/PWM/USB/I2C/Touch/LCD（CH573DS1 V2.3） |
 
 ![CH582F QFN28](docs/images/ch582f-qfn28.png)
 
