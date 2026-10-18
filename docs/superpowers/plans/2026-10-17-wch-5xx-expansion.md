@@ -8,7 +8,7 @@
 
 **Tech Stack:** 零依赖静态网页、UMD-lite、Node.js LTS 测试、手写 SVG 封装渲染、GitHub Actions（windows-latest）。
 
-**状态：** 执行中（2026-10-17；M0/M1 已完成，M2 进行中）。
+**状态：** 执行中（2026-10-18；M0-M7 全部完成，WCH 共 40 颗芯片）。
 
 ---
 

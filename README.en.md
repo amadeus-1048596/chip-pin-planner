@@ -36,7 +36,7 @@ Checking pin multiplexing before drawing a schematic is tedious: mux tables, map
 and mode restrictions are scattered across a datasheet. This tool puts that data on the
 package diagram, so you can see what a pin can do and what it conflicts with.
 
-Currently bundled: WCH **CH58x (16)**, **CH59x (11)** and **CH57x (10)**, 37 chips in total. The data format is vendor-neutral —
+Currently bundled: WCH **CH58x (16)**, **CH59x (11)** and **CH57x (13)**, 40 chips in total. The data format is vendor-neutral —
 adding a chip is one data file plus one manifest line. Contributions and chip requests are welcome.
 
 ## Quick start
@@ -49,7 +49,7 @@ Chrome / Edge.
 
 ## 5-minute tour
 
-1. **Pick a chip** from the top-bar dropdown, grouped by vendor/series (currently WCH CH58x with 16 chips, CH59x with 11 and CH57x with 10; see the table below).
+1. **Pick a chip** from the top-bar dropdown, grouped by vendor/series (currently WCH CH58x with 16 chips, CH59x with 11 and CH57x with 13; see the table below).
 2. **Assign pins**, two ways:
    - Click a pin on the package diagram and choose a function. Unavailable options are greyed out with a reason.
 
@@ -88,8 +88,11 @@ Full guide (Chinese): **[docs/user-guide.md](docs/user-guide.md)**.
 | CH59x | CH595F | QFN28 | 20 | 4 UART / 1 SPI / 1 I2C / 6 PWM / 10 ADC / 10 TouchKey / LCD 16×4 / USB (CH595DS1 V1.1) |
 | CH59x | CH595D | QFN20 | 12 | 2 UART / 1 SPI / 1 I2C / 3 PWM / 6 ADC / 6 TouchKey / LCD 8×4 / USB (CH595DS1 V1.1) |
 | CH59x | CH596D | QFN20 | 15 | 2 UART / 1 SPI / 1 I2C / 4 PWM / 8 ADC / 8 TouchKey; no USB/LCD; 1.2V single-cell (CH596DS1 V1.1) |
+| CH57x | CH573X | QFN32 | 22 | 4 UART / 1 SPI / 4 TMR / 8 PWM / 10 ADC / 10 TouchKey / USB host+device (CH573DS1 V2.3) |
 | CH57x | CH573F | QFN28 | 20 | 4 UART / 1 SPI / 4 TMR / 6 PWM / 8 ADC / 8 TouchKey / USB (CH573DS1 V2.3) |
+| CH57x | CH573Q | LQFP32 | 22 | 192K Flash; 4 UART / 1 SPI / 4 TMR / 8 PWM / 10 ADC / 10 TouchKey / USB (CH573DS1 V2.3) |
 | CH57x | CH571F | QFN28 | 20 | 2 UART / 1 SPI / 4 TMR / 6 ADC / USB; no PWM4-11/Touch/I2C/LCD (CH573DS1 V2.3) |
+| CH57x | CH571D | QFN20 | 15 | 2 UART / 1 SPI / 3 TMR / 6 ADC / USB device; no PWM4-11/Touch/DC-DC (CH573DS1 V2.3) |
 | CH57x | CH571R | TSSOP16 | 10 | 2 UART / 1 SPI / 4 TMR / 4 ADC / USB device; no PWM4-11/Touch/I2C/LCD (CH573DS1 V2.3) |
 | CH57x | CH571K | ESSOP10 | 4 | 1 UART / 1 SPI / 4 ADC; no Timer/PWM/USB/I2C/Touch/LCD (CH573DS1 V2.3) |
 | CH57x | CH572D | QFN20 | 12 | UART / I2C / SPI / TMR / PWM1-5 / CMP / KeyScan / USB; 2.4G+BLE (CH572DS1 V1.0) |
@@ -180,7 +183,7 @@ Key design choices:
 ## Development
 
 ```bash
-node tests/engine.test.js   # engine + chip data (200 assertions)
+node tests/engine.test.js   # engine + chip data (247 assertions)
 node tests/fuzz.js          # 8000 random operations + invariants
 node tests/dist.test.js     # release artifacts / zip / installer / update.bat (Windows PowerShell)
 ```
