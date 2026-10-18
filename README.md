@@ -33,7 +33,7 @@
 画板前查引脚复用比较麻烦：复用表、映射位和模式限制分散在数据手册的不同章节。
 这个工具把这些数据铺在封装图上，点引脚就能看到能做什么、和谁冲突。
 
-目前内置 WCH **CH58x（16 颗）**、**CH59x（11 颗）** 与 **CH57x（10 颗）**，共 **37 颗**芯片；工具本身不绑定厂商，新增芯片 = 一个数据文件 + 清单一行。欢迎补充其他型号或直接提需求。
+目前内置 WCH **CH58x（16 颗）**、**CH59x（11 颗）** 与 **CH57x（13 颗）**，共 **40 颗**芯片；工具本身不绑定厂商，新增芯片 = 一个数据文件 + 清单一行。欢迎补充其他型号或直接提需求。
 
 ## 快速开始
 
@@ -45,7 +45,7 @@
 
 ## 5 分钟上手
 
-1. **选芯片**：顶栏下拉按厂商/系列分组，选择型号与封装（当前内置 WCH CH58x 16 颗、CH59x 11 颗、CH57x 10 颗，详见下表）。
+1. **选芯片**：顶栏下拉按厂商/系列分组，选择型号与封装（当前内置 WCH CH58x 16 颗、CH59x 11 颗、CH57x 13 颗，详见下表）。
 2. **分配引脚**，两种方式任选：
    - 点封装图上的引脚 → 从菜单选功能。不可用项会置灰并说明原因。
 
@@ -84,8 +84,11 @@
 | CH59x | CH595F | QFN28 | 20 | 4 UART / 1 SPI / 1 I2C / 6 PWM / 10 ADC / 10 TouchKey / LCD 16×4 / USB（CH595DS1 V1.1） |
 | CH59x | CH595D | QFN20 | 12 | 2 UART / 1 SPI / 1 I2C / 3 PWM / 6 ADC / 6 TouchKey / LCD 8×4 / USB（CH595DS1 V1.1） |
 | CH59x | CH596D | QFN20 | 15 | 2 UART / 1 SPI / 1 I2C / 4 PWM / 8 ADC / 8 TouchKey；无 USB/LCD；单节 1.2V（CH596DS1 V1.1） |
+| CH57x | CH573X | QFN32 | 22 | 4 UART / 1 SPI / 4 TMR / 8 PWM / 10 ADC / 10 TouchKey / USB 主机+设备（CH573DS1 V2.3） |
 | CH57x | CH573F | QFN28 | 20 | 4 UART / 1 SPI / 4 TMR / 6 PWM / 8 ADC / 8 TouchKey / USB（CH573DS1 V2.3） |
+| CH57x | CH573Q | LQFP32 | 22 | 192K Flash；4 UART / 1 SPI / 4 TMR / 8 PWM / 10 ADC / 10 TouchKey / USB（CH573DS1 V2.3） |
 | CH57x | CH571F | QFN28 | 20 | 2 UART / 1 SPI / 4 TMR / 6 ADC / USB；无 PWM4-11/Touch/I2C/LCD（CH573DS1 V2.3） |
+| CH57x | CH571D | QFN20 | 15 | 2 UART / 1 SPI / 3 TMR / 6 ADC / USB 设备；无 PWM4-11/Touch/DC-DC（CH573DS1 V2.3） |
 | CH57x | CH571R | TSSOP16 | 10 | 2 UART / 1 SPI / 4 TMR / 4 ADC / USB 设备；无 PWM4-11/Touch/I2C/LCD（CH573DS1 V2.3） |
 | CH57x | CH571K | ESSOP10 | 4 | 1 UART / 1 SPI / 4 ADC；无 Timer/PWM/USB/I2C/Touch/LCD（CH573DS1 V2.3） |
 | CH57x | CH572D | QFN20 | 12 | UART / I2C / SPI / TMR / PWM1-5 / CMP / KeyScan / USB；2.4G+BLE（CH572DS1 V1.0） |
@@ -103,7 +106,7 @@
 
 ![CH582F QFN28](docs/images/ch582f-qfn28.png)
 
-列表里没有你用的芯片？当前内置的是 WCH CH58x，但数据格式不绑定厂商——欢迎按 [贡献指南](CONTRIBUTING.md) 加一颗，或直接提需求。通常就是“一个数据文件 + 清单一行”，不会写代码也完全可以提需求。
+列表里没有你用的芯片？当前内置 WCH CH58x / CH59x / CH57x，但数据格式不绑定厂商——欢迎按 [贡献指南](CONTRIBUTING.md) 加一颗，或直接提需求。通常就是“一个数据文件 + 清单一行”，不会写代码也完全可以提需求。
 
 ## 工程结构
 
@@ -188,7 +191,7 @@
 
 ## 功能范围
 
-- **芯片数据**：当前内置 WCH CH58x 三颗（CH582M / CH582F / CH583M）；数据格式与厂商无关，欢迎补充其他型号或提需求；
+- **芯片数据**：当前内置 WCH CH58x / CH59x / CH57x 共 40 颗；数据格式与厂商无关，欢迎补充其他型号或提需求；
 - **会话状态**：配置只存在当前会话内存里，刷新即清空——需要留存请用“保存工程”；
 - **不包含**：不生成代码，也不做电气规则检查（ERC）或自动布线；
 - **安装器**：未签名，Windows 可能弹 SmartScreen，选择“更多信息 → 仍要运行”即可。
@@ -204,7 +207,7 @@
 ## 开发者
 
 ```bash
-node tests/engine.test.js   # 引擎 + 芯片数据（200 条）
+node tests/engine.test.js   # 引擎 + 芯片数据（247 条）
 node tests/fuzz.js          # 随机操作 8000 次 + 不变量
 node tests/dist.test.js     # 发布物 / zip / 安装器 / update.bat（需 Windows PowerShell）
 ```

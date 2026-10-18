@@ -23,7 +23,7 @@
 | `schemaVersion` | number | 当前上限 **2**；超限会显示"需要更新版本的工具"；旧值 1 兼容 |
 | `id` | string | 唯一 slug（小写连字符，如 `ch582m-qfn48` = 型号-封装）；重复会置灰报错 |
 | `meta` | object | `{ source: "手册型号 版本 (日期)", author, date, note? }`；**source 必填且如实**（数据来源要求，PR 会查） |
-| `chip` | object | `{ vendor, series?, name, package }`（如 `{ vendor:"WCH", series:"CH58x", name:"CH582M", package:"QFN48" }`）；`series` 用于下拉分组，缺省归入“未分类”；name+package 决定下拉显示与老工程路由 |
+| `chip` | object | `{ vendor, series?, name, package }`（如 `{ vendor:"WCH", series:"CH58x", name:"CH582M", package:"QFN48" }`）；`series` 用于下拉分组（当前取值：CH58x / CH59x / CH57x），缺省归入“未分类”；name+package 决定下拉显示与老工程路由 |
 | `package` | object | 渲染参数：`{ family:"quad"\|"dual"\|"dual-split", style:"no-lead"\|..., pinsPerSide, pitch, body:[宽,长], pin1:"topLeft", sequence:"ccw-down", thermalPad? }` |
 | `pins` | array | 每脚 `{ num, name, type, alts[], note? }`；num 唯一（EP 用 `"EP"`）；type = `io`\|`power`\|`osc`\|`rf` |
 | `globalConfigs` | array | 系统开关 `{ id, label, default, claims:[引脚], note? }`（如调试口/RST/晶振） |
