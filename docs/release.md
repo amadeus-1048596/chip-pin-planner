@@ -21,7 +21,7 @@
 ### 1. 本地全绿
 
 ```bash
-node tests/engine.test.js   # 期望：200 passed, 0 failed
+node tests/engine.test.js   # 期望：252 passed, 0 failed
 node tests/fuzz.js          # 期望：退出码 0
 node tests/dist.test.js     # 期望：8 passed, 0 failed（需 Windows PowerShell）
 ```
@@ -74,6 +74,15 @@ git push origin vX.Y
 | 下载 zip | 解压 → 双击 `index.html` 可离线使用；根目录平铺 |
 | `update.bat` | 产物目录双击 → `[SKIP] 已是最新 vX.Y`（**必须在 Pages 部署后测**） |
 | 安装器（可选） | per-user 安装、无管理员；无签名会有 SmartScreen 提示 |
+
+### 6. 更新 GitHub 仓库 About（重大更新）
+
+加芯片 / 加系列等重大更新后，同步更新仓库首页右上角的 About：
+
+- **description**：写当前芯片总数与系列，例如“内置 WCH CH58x / CH59x / CH57x / CH32V 共 44 颗”。
+- **topics**：补上新系列（`ch58x` / `ch59x` / `ch57x` / `ch32v`…）。
+- **API**：`PATCH /repos/{owner}/{repo}` 改 description / homepage；topics 用 `PUT /repos/{owner}/{repo}/topics`，Accept 用 `application/vnd.github.mercy-preview+json`。
+- 这一步不影响 Pages/Release，但会影响仓库在 GitHub 搜索和分享时的展示。
 
 ## 故障排查
 
