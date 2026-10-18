@@ -68,7 +68,7 @@
     activateChip(firstOk, true);
     var badDetail = bad.slice(0, 3).map(function (c) { return c.file.split("/").pop() + "：" + c.reason; }).join("；") +
                     (bad.length > 3 ? " 等" : "");
-    log("就绪（v1.12）：可用芯片 " + (chips.length - bad.length) + " 颗" +
+    log("就绪（v1.13）：可用芯片 " + (chips.length - bad.length) + " 颗" +
         (bad.length ? "，不可用 " + bad.length + " 颗（" + badDetail + "）" : "") + "。");
   }
 
