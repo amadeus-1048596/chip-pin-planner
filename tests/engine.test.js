@@ -1758,18 +1758,18 @@ t("CH582F：I2C / UART3 映射组语义正确移除", () => {
 
 console.log("\n=== v1.8-4 / M2: 芯片对账 ===");
 
-t("清单：40 颗芯片按 manifest 顺序全部可用、id 唯一", () => {
+t("清单：44 颗芯片按 manifest 顺序全部可用、id 唯一", () => {
   const fs = require("fs");
   const src = fs.readFileSync(__dirname + "/../chips/manifest.js", "utf8");
   const files = (src.match(/"([^"]+)"/g) || []).map(s => s.slice(1, -1));
-  assert.strictEqual(files.length, 40);
+  assert.strictEqual(files.length, 44);
   const defs = files.map(f => require(__dirname + "/../" + f));
   const chips = Loader.buildChips(defs.map((d, i) => ({ file: "chips/x" + i + ".js", def: d })), Model);
   assert.ok(chips.every(c => c.ok), JSON.stringify(chips.map(c => c.reason)));
-  assert.strictEqual(new Set(chips.map(c => c.chipId)).size, 40);
+  assert.strictEqual(new Set(chips.map(c => c.chipId)).size, 44);
 });
 
-t("manifest：40 份数据文件按清单顺序，文件均存在", () => {
+t("manifest：44 份数据文件按清单顺序，文件均存在", () => {
   const fs = require("fs");
   const src = fs.readFileSync(__dirname + "/../chips/manifest.js", "utf8");
   const m = src.match(/\[([^\]]*)\]/);
@@ -1816,6 +1816,10 @@ t("manifest：40 份数据文件按清单顺序，文件均存在", () => {
     "chips/wch-ch587d-qfn20.js",
     "chips/wch-ch586w-qfn68x7.js",
     "chips/wch-ch586m-qfn48.js",
+    "chips/wch-ch32v208gbu6-qfn28.js",
+    "chips/wch-ch32v208cbu6-qfn48.js",
+    "chips/wch-ch32v208rbt6-lqfp64m.js",
+    "chips/wch-ch32v208wbu6-qfn68.js"
   ]);
   files.forEach(f => assert.ok(fs.existsSync(__dirname + "/../" + f), f + " 应存在"));
 });
@@ -2452,6 +2456,101 @@ t("CH586M：QFN48，40 IO，无 USB HS/PD/NFC；QSPI/ARGB/LED/LCD28", () => {
   ["USB_HS", "USB_PD", "NFC"].forEach(x => assert.ok(!ids.includes(x), x));
   assert.strictEqual(CHIP586M.resources.filter(r => r.category === "ADC").length, 16);
   assert.strictEqual(CHIP586M.resources.find(r => r.id === "LCD").optional.length, 28);
+});
+
+console.log("\n=== M8: CH32V208 ===");
+const CHIP208GB = require("../chips/wch-ch32v208gbu6-qfn28.js");
+const CHIP208CB = require("../chips/wch-ch32v208cbu6-qfn48.js");
+const CHIP208RB = require("../chips/wch-ch32v208rbt6-lqfp64m.js");
+const CHIP208WB = require("../chips/wch-ch32v208wbu6-qfn68.js");
+
+t("CH32V208GBU6：QFN28，20 可复用 IO，8 ADC / 2 UART / 1 SPI/I2C/CAN / ETH", () => {
+  assert.strictEqual(CHIP208GB.id, "ch32v208gbu6-qfn28");
+  assert.strictEqual(CHIP208GB.chip.name, "CH32V208GBU6");
+  assert.strictEqual(CHIP208GB.chip.series, "CH32V");
+  assert.strictEqual(CHIP208GB.package.family, "quad");
+  assert.strictEqual(CHIP208GB.package.pinsPerSide, 7);
+  assert.strictEqual(CHIP208GB.package.pin1, "bottomLeft");
+  assert.deepStrictEqual(CHIP208GB.package.body, [4, 4]);
+  assert.strictEqual(CHIP208GB.pins.length, 29);
+  const v = Model.validateChip(CHIP208GB);
+  assert.strictEqual(v.ok, true, JSON.stringify(v.errors));
+  assert.strictEqual(Avail.countIO(CHIP208GB, Avail.defaultState(CHIP208GB)).total, 20);
+  assert.strictEqual(CHIP208GB.resources.filter(r => r.category === "ADC").length, 8);
+  assert.strictEqual(CHIP208GB.resources.filter(r => r.category === "UART").length, 2);
+  assert.strictEqual(CHIP208GB.resources.filter(r => r.category === "SPI").length, 1);
+  assert.strictEqual(CHIP208GB.resources.filter(r => r.category === "I2C").length, 1);
+  const ids = CHIP208GB.resources.map(r => r.id);
+  ["USART1", "USART2", "SPI1", "I2C1", "CAN1", "USB1", "USB2", "ETH", "TIM1", "TIM5", "OPA1", "OPA2"].forEach(x => assert.ok(ids.includes(x), x));
+  ["USART3", "UART4", "SPI2", "I2C2"].forEach(x => assert.ok(!ids.includes(x), x));
+  const u1 = CHIP208GB.resources.find(r => r.id === "USART1");
+  assert.deepStrictEqual(u1.signals.find(s => s.name === "TXD").pins, ["PB6"]);
+  assert.deepStrictEqual(u1.signals.find(s => s.name === "RXD").pins, ["PB7"]);
+  assert.strictEqual(CHIP208GB.resources.find(r => r.id === "USB1").note, "全速 USB 设备（USBD）");
+  assert.strictEqual(CHIP208GB.resources.find(r => r.id === "USB2").note, "全速 USB 主机/设备（USBFS）");
+  assert.deepStrictEqual(CHIP208GB.globalConfigs.map(c => c.id), ["debug", "lse"]);
+  const names = CHIP208GB.pins.map(p => p.name);
+  assert.ok(names.includes("BOOT0") && !names.includes("NRST"));
+  assert.strictEqual(CHIP208GB.pins.find(p => p.name === "BOOT0").type, "power");
+});
+
+t("CH32V208CBU6：QFN48，35 IO，10 ADC / 4 UART / 2 SPI/I2C，无 ETH", () => {
+  assert.strictEqual(CHIP208CB.id, "ch32v208cbu6-qfn48");
+  assert.strictEqual(CHIP208CB.package.pinsPerSide, 12);
+  assert.strictEqual(CHIP208CB.pins.length, 49);
+  const v = Model.validateChip(CHIP208CB);
+  assert.strictEqual(v.ok, true, JSON.stringify(v.errors));
+  assert.strictEqual(Avail.countIO(CHIP208CB, Avail.defaultState(CHIP208CB)).total, 35);
+  assert.strictEqual(CHIP208CB.resources.filter(r => r.category === "ADC").length, 10);
+  assert.strictEqual(CHIP208CB.resources.filter(r => r.category === "UART").length, 4);
+  assert.strictEqual(CHIP208CB.resources.filter(r => r.category === "SPI").length, 2);
+  assert.strictEqual(CHIP208CB.resources.filter(r => r.category === "I2C").length, 2);
+  assert.ok(!CHIP208CB.resources.some(r => r.id === "ETH"));
+  assert.deepStrictEqual(CHIP208CB.resources.find(r => r.id === "UART4").signals.find(s => s.name === "TXD").pins, ["PB0"]);
+});
+
+t("CH32V208RBT6：LQFP64M，49 IO，16 ADC / 4 UART，10M ETH", () => {
+  assert.strictEqual(CHIP208RB.id, "ch32v208rbt6-lqfp64m");
+  assert.strictEqual(CHIP208RB.package.family, "quad");
+  assert.strictEqual(CHIP208RB.package.style, "gullwing");
+  assert.strictEqual(CHIP208RB.package.pin1, "topLeft");
+  assert.strictEqual(CHIP208RB.package.pinsPerSide, 16);
+  assert.strictEqual(CHIP208RB.package.thermalPad, undefined);
+  assert.deepStrictEqual(CHIP208RB.package.body, [10, 10]);
+  assert.strictEqual(CHIP208RB.pins.length, 64);
+  const v = Model.validateChip(CHIP208RB);
+  assert.strictEqual(v.ok, true, JSON.stringify(v.errors));
+  assert.strictEqual(Avail.countIO(CHIP208RB, Avail.defaultState(CHIP208RB)).total, 49);
+  assert.strictEqual(CHIP208RB.resources.filter(r => r.category === "ADC").length, 16);
+  assert.strictEqual(CHIP208RB.resources.filter(r => r.category === "UART").length, 4);
+  assert.ok(CHIP208RB.resources.some(r => r.id === "ETH"));
+  assert.deepStrictEqual(CHIP208RB.resources.find(r => r.id === "TIM3_ETR").signals[0].pins, ["PD2"]);
+});
+
+t("CH32V208WBU6：QFN68，53 IO，16 ADC / 4 UART，10M ETH", () => {
+  assert.strictEqual(CHIP208WB.id, "ch32v208wbu6-qfn68");
+  assert.strictEqual(CHIP208WB.package.pinsPerSide, 17);
+  assert.strictEqual(CHIP208WB.package.thermalPad, "VSS (EP)");
+  assert.strictEqual(CHIP208WB.pins.length, 69);
+  const v = Model.validateChip(CHIP208WB);
+  assert.strictEqual(v.ok, true, JSON.stringify(v.errors));
+  assert.strictEqual(Avail.countIO(CHIP208WB, Avail.defaultState(CHIP208WB)).total, 53);
+  assert.strictEqual(CHIP208WB.resources.filter(r => r.category === "ADC").length, 16);
+  assert.ok(CHIP208WB.resources.some(r => r.id === "ETH"));
+  assert.deepStrictEqual(CHIP208WB.pins.filter(p => ["PD3", "PD4", "PD5", "PD6"].includes(p.name)).map(p => p.num).sort((a, b) => a - b), [18, 33, 34, 66]);
+});
+
+t("CH32V208：关键落脚点可分配（USART1 映射组 / ETH / 高级定时器）", () => {
+  let s = Avail.defaultState(CHIP208GB);
+  const u = Avail.assign(CHIP208GB, s, "USART1", { group: false, pins: { TXD: "PB6", RXD: "PB7", CTS: "PA11", RTS: "PA12" } });
+  assert.strictEqual(u.error, undefined, u.error);
+  const e = Avail.assign(CHIP208GB, s, "ETH", { group: false, pins: { RXP: "PC6", RXN: "PC7", TXP: "PC8", TXN: "PC9" } });
+  assert.strictEqual(e.error, undefined, e.error);
+  let s2 = Avail.defaultState(CHIP208WB);
+  const t2 = Avail.assign(CHIP208WB, s2, "TIM2", { group: false, pins: { CH1: "PA15", CH2: "PB3" } });
+  assert.strictEqual(t2.error, undefined, t2.error);
+  const o = Avail.assign(CHIP208WB, s2, "OPA1", { group: false, pins: { CH0P: "PB15", OUT0: "PA3" } });
+  assert.strictEqual(o.error, undefined, o.error);
 });
 
 console.log("\n=== v1.8-5: 终审修复（I1/I2） ===");
