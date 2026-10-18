@@ -1758,18 +1758,18 @@ t("CH582F：I2C / UART3 映射组语义正确移除", () => {
 
 console.log("\n=== v1.8-4 / M2: 芯片对账 ===");
 
-t("清单：31 颗芯片按 manifest 顺序全部可用、id 唯一", () => {
+t("清单：37 颗芯片按 manifest 顺序全部可用、id 唯一", () => {
   const fs = require("fs");
   const src = fs.readFileSync(__dirname + "/../chips/manifest.js", "utf8");
   const files = (src.match(/"([^"]+)"/g) || []).map(s => s.slice(1, -1));
-  assert.strictEqual(files.length, 31);
+  assert.strictEqual(files.length, 37);
   const defs = files.map(f => require(__dirname + "/../" + f));
   const chips = Loader.buildChips(defs.map((d, i) => ({ file: "chips/x" + i + ".js", def: d })), Model);
   assert.ok(chips.every(c => c.ok), JSON.stringify(chips.map(c => c.reason)));
-  assert.strictEqual(new Set(chips.map(c => c.chipId)).size, 31);
+  assert.strictEqual(new Set(chips.map(c => c.chipId)).size, 37);
 });
 
-t("manifest：31 份数据文件按清单顺序，文件均存在", () => {
+t("manifest：37 份数据文件按清单顺序，文件均存在", () => {
   const fs = require("fs");
   const src = fs.readFileSync(__dirname + "/../chips/manifest.js", "utf8");
   const m = src.match(/\[([^\]]*)\]/);
@@ -1806,7 +1806,13 @@ t("manifest：31 份数据文件按清单顺序，文件均存在", () => {
     "chips/wch-ch572r-tssop16.js",
     "chips/wch-ch570d-qfn20.js",
     "chips/wch-ch570q-dfn10x3.js",
-    "chips/wch-ch570e-sop8.js"
+    "chips/wch-ch570e-sop8.js",
+    "chips/wch-ch587w-qfn68x7.js",
+    "chips/wch-ch587m-qfn48.js",
+    "chips/wch-ch587f-qfn32.js",
+    "chips/wch-ch587d-qfn20.js",
+    "chips/wch-ch586w-qfn68x7.js",
+    "chips/wch-ch586m-qfn48.js"
   ]);
   files.forEach(f => assert.ok(fs.existsSync(__dirname + "/../" + f), f + " 应存在"));
 });
@@ -2289,6 +2295,91 @@ t("CH570E：SOP8，3 IO，仅 UART/I2C/TMR", () => {
   assert.strictEqual(Avail.countIO(CHIP570E, Avail.defaultState(CHIP570E)).total, 3);
   const ids = CHIP570E.resources.filter(r => !r.perPin).map(r => r.id);
   assert.deepStrictEqual(ids.sort(), ["I2C", "TMR", "UART"]);
+});
+
+console.log("\n=== M7: CH587 / CH586 ===");
+const CHIP587W = require("../chips/wch-ch587w-qfn68x7.js");
+const CHIP587M = require("../chips/wch-ch587m-qfn48.js");
+const CHIP587F = require("../chips/wch-ch587f-qfn32.js");
+const CHIP587D = require("../chips/wch-ch587d-qfn20.js");
+const CHIP586W = require("../chips/wch-ch586w-qfn68x7.js");
+const CHIP586M = require("../chips/wch-ch586m-qfn48.js");
+
+t("CH587W：QFN68X7，58 IO，USB PD/FS/HS、NFC、QSPI、ARGB、LED、LCD32、ADC22", () => {
+  assert.strictEqual(CHIP587W.id, "ch587w-qfn68x7");
+  assert.strictEqual(CHIP587W.chip.name, "CH587W");
+  assert.strictEqual(CHIP587W.chip.series, "CH58x");
+  assert.strictEqual(CHIP587W.package.pinsPerSide, 17);
+  assert.strictEqual(CHIP587W.package.body[0], 7);
+  assert.strictEqual(CHIP587W.pins.length, 69);
+  const v = Model.validateChip(CHIP587W);
+  assert.strictEqual(v.ok, true, JSON.stringify(v.errors));
+  assert.strictEqual(Avail.countIO(CHIP587W, Avail.defaultState(CHIP587W)).total, 58);
+  assert.strictEqual(CHIP587W.resources.filter(r => r.category === "ADC").length, 22);
+  assert.strictEqual(CHIP587W.resources.filter(r => r.category === "PWM").length, 8);
+  assert.strictEqual(CHIP587W.resources.find(r => r.id === "LCD").optional.length, 32);
+  ["USB_PD", "USB_HS", "USB_FS", "NFC", "QSPI", "ARGB", "LED"].forEach(x => assert.ok(CHIP587W.resources.some(r => r.id === x), x));
+  assert.strictEqual(CHIP587W.resources.filter(r => r.category === "UART").length, 4);
+  assert.strictEqual(CHIP587W.resources.filter(r => r.category === "SPI").length, 2);
+});
+
+t("CH587M：QFN48，40 IO，USB FS/HS、QSPI、ARGB、LED、LCD28、ADC16", () => {
+  assert.strictEqual(CHIP587M.pins.length, 49);
+  assert.strictEqual(Model.validateChip(CHIP587M).ok, true, JSON.stringify(Model.validateChip(CHIP587M).errors));
+  assert.strictEqual(Avail.countIO(CHIP587M, Avail.defaultState(CHIP587M)).total, 40);
+  assert.strictEqual(CHIP587M.resources.filter(r => r.category === "ADC").length, 16);
+  assert.strictEqual(CHIP587M.resources.find(r => r.id === "LCD").optional.length, 28);
+  assert.strictEqual(CHIP587M.resources.filter(r => r.category === "SPI").length, 2);
+  const ids = CHIP587M.resources.map(r => r.id);
+  ["QSPI", "ARGB", "LED", "USB_FS", "USB_HS"].forEach(x => assert.ok(ids.includes(x), x));
+  ["NFC", "USB_PD"].forEach(x => assert.ok(!ids.includes(x), x));
+});
+
+t("CH587F：QFN32，24 IO，USB FS/HS、ARGB、LCD13、ADC8", () => {
+  assert.strictEqual(CHIP587F.pins.length, 33);
+  assert.strictEqual(Model.validateChip(CHIP587F).ok, true, JSON.stringify(Model.validateChip(CHIP587F).errors));
+  assert.strictEqual(Avail.countIO(CHIP587F, Avail.defaultState(CHIP587F)).total, 24);
+  assert.strictEqual(CHIP587F.resources.filter(r => r.category === "ADC").length, 8);
+  assert.strictEqual(CHIP587F.resources.filter(r => r.category === "PWM").length, 7);
+  assert.strictEqual(CHIP587F.resources.find(r => r.id === "LCD").optional.length, 13);
+  const ids = CHIP587F.resources.map(r => r.id);
+  ["SPI0", "USB_FS", "USB_HS", "ARGB"].forEach(x => assert.ok(ids.includes(x), x));
+  ["SPI1", "QSPI", "LED", "NFC", "USB_PD"].forEach(x => assert.ok(!ids.includes(x), x));
+});
+
+t("CH587D：QFN20，12 IO，UART2/SPI1、USB FS/HS、ARGB、ADC5", () => {
+  assert.strictEqual(CHIP587D.pins.length, 21);
+  assert.strictEqual(Model.validateChip(CHIP587D).ok, true, JSON.stringify(Model.validateChip(CHIP587D).errors));
+  assert.strictEqual(Avail.countIO(CHIP587D, Avail.defaultState(CHIP587D)).total, 12);
+  assert.strictEqual(CHIP587D.resources.filter(r => r.category === "ADC").length, 5);
+  assert.strictEqual(CHIP587D.resources.filter(r => r.category === "PWM").length, 3);
+  assert.strictEqual(CHIP587D.resources.filter(r => r.category === "UART").length, 2);
+  const ids = CHIP587D.resources.map(r => r.id);
+  ["SPI0", "USB_FS", "USB_HS", "ARGB"].forEach(x => assert.ok(ids.includes(x), x));
+  ["SPI1", "QSPI", "LED", "LCD", "NFC", "USB_PD"].forEach(x => assert.ok(!ids.includes(x), x));
+  assert.deepStrictEqual(CHIP587D.globalConfigs.map(c => c.id), ["debug"]);
+});
+
+t("CH586W：QFN68X7，58 IO，无 USB HS/PD；NFC/QSPI/ARGB/LED/LCD32", () => {
+  assert.strictEqual(CHIP586W.pins.length, 69);
+  assert.strictEqual(Model.validateChip(CHIP586W).ok, true, JSON.stringify(Model.validateChip(CHIP586W).errors));
+  assert.strictEqual(Avail.countIO(CHIP586W, Avail.defaultState(CHIP586W)).total, 58);
+  const ids = CHIP586W.resources.map(r => r.id);
+  ["USB_FS", "NFC", "QSPI", "ARGB", "LED", "LCD"].forEach(x => assert.ok(ids.includes(x), x));
+  ["USB_HS", "USB_PD"].forEach(x => assert.ok(!ids.includes(x), x));
+  assert.strictEqual(CHIP586W.resources.filter(r => r.category === "ADC").length, 22);
+  assert.strictEqual(CHIP586W.resources.find(r => r.id === "LCD").optional.length, 32);
+});
+
+t("CH586M：QFN48，40 IO，无 USB HS/PD/NFC；QSPI/ARGB/LED/LCD28", () => {
+  assert.strictEqual(CHIP586M.pins.length, 49);
+  assert.strictEqual(Model.validateChip(CHIP586M).ok, true, JSON.stringify(Model.validateChip(CHIP586M).errors));
+  assert.strictEqual(Avail.countIO(CHIP586M, Avail.defaultState(CHIP586M)).total, 40);
+  const ids = CHIP586M.resources.map(r => r.id);
+  ["USB_FS", "QSPI", "ARGB", "LED", "LCD"].forEach(x => assert.ok(ids.includes(x), x));
+  ["USB_HS", "USB_PD", "NFC"].forEach(x => assert.ok(!ids.includes(x), x));
+  assert.strictEqual(CHIP586M.resources.filter(r => r.category === "ADC").length, 16);
+  assert.strictEqual(CHIP586M.resources.find(r => r.id === "LCD").optional.length, 28);
 });
 
 console.log("\n=== v1.8-5: 终审修复（I1/I2） ===");

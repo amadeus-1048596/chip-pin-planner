@@ -33,7 +33,7 @@
 画板前查引脚复用比较麻烦：复用表、映射位和模式限制分散在数据手册的不同章节。
 这个工具把这些数据铺在封装图上，点引脚就能看到能做什么、和谁冲突。
 
-目前内置 WCH **CH58x（10 颗）**、**CH59x（11 颗）** 与 **CH57x（10 颗）**，共 **31 颗**芯片；工具本身不绑定厂商，新增芯片 = 一个数据文件 + 清单一行。欢迎补充其他型号或直接提需求。
+目前内置 WCH **CH58x（16 颗）**、**CH59x（11 颗）** 与 **CH57x（10 颗）**，共 **37 颗**芯片；工具本身不绑定厂商，新增芯片 = 一个数据文件 + 清单一行。欢迎补充其他型号或直接提需求。
 
 ## 快速开始
 
@@ -45,7 +45,7 @@
 
 ## 5 分钟上手
 
-1. **选芯片**：顶栏下拉按厂商/系列分组，选择型号与封装（当前内置 WCH CH58x 10 颗、CH59x 11 颗、CH57x 10 颗，详见下表）。
+1. **选芯片**：顶栏下拉按厂商/系列分组，选择型号与封装（当前内置 WCH CH58x 16 颗、CH59x 11 颗、CH57x 10 颗，详见下表）。
 2. **分配引脚**，两种方式任选：
    - 点封装图上的引脚 → 从菜单选功能。不可用项会置灰并说明原因。
 
@@ -94,6 +94,12 @@
 | CH57x | CH570D | QFN20 | 12 | 同 CH572D；仅 2.4G（无 BLE）（CH572DS1 V1.0） |
 | CH57x | CH570Q | DFN10X3 | 5 | UART / I2C / TMR / KeyScan / USB 设备；无 SPI/CMP/PWM1-5/BLE（CH572DS1 V1.0） |
 | CH57x | CH570E | SOP8 | 3 | UART / I2C / TMR；无 SPI/CMP/USB/KeyScan/PWM/BLE（CH572DS1 V1.0） |
+| CH58x | CH587W | QFN68X7 | 58 | 4 UART / 2 SPI / I2C / QSPI / USB PD+FS+HS / NFC / ARGB / LED / LCD 32×4 / 22 ADC / 22 Touch（CH587DS1 V1.0） |
+| CH58x | CH587M | QFN48 | 40 | 4 UART / 2 SPI / I2C / QSPI / USB FS+HS / ARGB / LED / LCD 28×4 / 16 ADC（CH587DS1 V1.0） |
+| CH58x | CH587F | QFN32 | 24 | 4 UART / 1 SPI / I2C / USB FS+HS / ARGB / LCD 13 段 / 8 ADC（型号表标 9+1/14×4，待复核）（CH587DS1 V1.0） |
+| CH58x | CH587D | QFN20 | 12 | 2 UART / 1 SPI / I2C / USB FS+HS / ARGB / 5 ADC（CH587DS1 V1.0） |
+| CH58x | CH586W | QFN68X7 | 58 | CH587W 去 USB HS/PD；NFC / QSPI / ARGB / LED / LCD 32×4 / 22 ADC（CH587DS1 V1.0） |
+| CH58x | CH586M | QFN48 | 40 | CH587M 去 USB HS/PD/NFC；QSPI / ARGB / LED / LCD 28×4 / 16 ADC（CH587DS1 V1.0） |
 
 ![CH582F QFN28](docs/images/ch582f-qfn28.png)
 

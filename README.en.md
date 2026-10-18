@@ -36,7 +36,7 @@ Checking pin multiplexing before drawing a schematic is tedious: mux tables, map
 and mode restrictions are scattered across a datasheet. This tool puts that data on the
 package diagram, so you can see what a pin can do and what it conflicts with.
 
-Currently bundled: WCH **CH58x (10)**, **CH59x (11)** and **CH57x (10)**, 31 chips in total. The data format is vendor-neutral —
+Currently bundled: WCH **CH58x (16)**, **CH59x (11)** and **CH57x (10)**, 37 chips in total. The data format is vendor-neutral —
 adding a chip is one data file plus one manifest line. Contributions and chip requests are welcome.
 
 ## Quick start
@@ -49,7 +49,7 @@ Chrome / Edge.
 
 ## 5-minute tour
 
-1. **Pick a chip** from the top-bar dropdown, grouped by vendor/series (currently WCH CH58x with 10 chips, CH59x with 11 and CH57x with 10; see the table below).
+1. **Pick a chip** from the top-bar dropdown, grouped by vendor/series (currently WCH CH58x with 16 chips, CH59x with 11 and CH57x with 10; see the table below).
 2. **Assign pins**, two ways:
    - Click a pin on the package diagram and choose a function. Unavailable options are greyed out with a reason.
 
@@ -98,6 +98,12 @@ Full guide (Chinese): **[docs/user-guide.md](docs/user-guide.md)**.
 | CH57x | CH570D | QFN20 | 12 | Same as CH572D; 2.4G only (no BLE) (CH572DS1 V1.0) |
 | CH57x | CH570Q | DFN10X3 | 5 | UART / I2C / TMR / KeyScan / USB device; no SPI/CMP/PWM1-5/BLE (CH572DS1 V1.0) |
 | CH57x | CH570E | SOP8 | 3 | UART / I2C / TMR; no SPI/CMP/USB/KeyScan/PWM/BLE (CH572DS1 V1.0) |
+| CH58x | CH587W | QFN68X7 | 58 | 4 UART / 2 SPI / I2C / QSPI / USB PD+FS+HS / NFC / ARGB / LED / LCD 32×4 / 22 ADC / 22 Touch (CH587DS1 V1.0) |
+| CH58x | CH587M | QFN48 | 40 | 4 UART / 2 SPI / I2C / QSPI / USB FS+HS / ARGB / LED / LCD 28×4 / 16 ADC (CH587DS1 V1.0) |
+| CH58x | CH587F | QFN32 | 24 | 4 UART / 1 SPI / I2C / USB FS+HS / ARGB / LCD 13 segments / 8 ADC (datasheet table says 9+1/14×4; pending review) (CH587DS1 V1.0) |
+| CH58x | CH587D | QFN20 | 12 | 2 UART / 1 SPI / I2C / USB FS+HS / ARGB / 5 ADC (CH587DS1 V1.0) |
+| CH58x | CH586W | QFN68X7 | 58 | CH587W without USB HS/PD; NFC / QSPI / ARGB / LED / LCD 32×4 / 22 ADC (CH587DS1 V1.0) |
+| CH58x | CH586M | QFN48 | 40 | CH587M without USB HS/PD/NFC; QSPI / ARGB / LED / LCD 28×4 / 16 ADC (CH587DS1 V1.0) |
 
 ![CH582F QFN28](docs/images/ch582f-qfn28.png)
 
