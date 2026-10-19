@@ -53,6 +53,19 @@ jobs:
           if (git rev-parse --verify --quiet "HEAD^") {
             $prev = @(git tag --merged "HEAD^" --list "v*" --sort=-v:refname)[0]
           }
+          # 兼容旧 tag 与新分支不在同一祖先线的情况；
+          # baseline 比当前已合并 tag 更新时，用 baseline 作为增量起点。
+          if (Test-Path ".release-baseline") {
+            $base = (Get-Content ".release-baseline" -Raw).Trim()
+            if ($base -and (git rev-parse --verify --quiet $base)) {
+              $baseIsOlder = $false
+              if ($prev) {
+                git merge-base --is-ancestor $base $prev
+                $baseIsOlder = ($LASTEXITCODE -eq 0)
+              }
+              if (-not $baseIsOlder) { $prev = $base }
+            }
+          }
           if ($prev) {
             git log "$prev..HEAD" --pretty="- %s" | Out-File -Encoding utf8 notes.md
           } else {
