@@ -21,7 +21,7 @@
 ### 1. 本地全绿
 
 ```bash
-node tests/engine.test.js   # 期望：252 passed, 0 failed
+node tests/engine.test.js   # 期望：254 passed, 0 failed
 node tests/fuzz.js          # 期望：退出码 0
 node tests/dist.test.js     # 期望：8 passed, 0 failed（需 Windows PowerShell）
 ```

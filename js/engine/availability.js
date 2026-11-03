@@ -351,7 +351,9 @@
         sigs.forEach(function (s) {
           s.pins.forEach(function (pin, idx) {
             if (pin !== pinName) return;
-            var group = idx === 1;   // 映射侧标记（groupSwitch 资源即“映射组”；双落点单信号资源同理）
+            // 只有 groupSwitch / groupKey 资源才有“映射组”语义；
+            // 普通多落脚点信号（如 GD32 USART0_TX 的 PB6）只是第二可选脚，不标映射组。
+            var group = (res.groupSwitch || res.groupKey) ? (idx === 1) : false;
             // 可选信号：未分配→提示先分配；已分配→以 setSignal 预演给可用性
             if (reqNames.indexOf(s.name) < 0) {
               if (entry.fixed || lockedBy) {

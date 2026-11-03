@@ -1758,18 +1758,18 @@ t("CH582F：I2C / UART3 映射组语义正确移除", () => {
 
 console.log("\n=== v1.8-4 / M2: 芯片对账 ===");
 
-t("清单：44 颗芯片按 manifest 顺序全部可用、id 唯一", () => {
+t("清单：45 颗芯片按 manifest 顺序全部可用、id 唯一", () => {
   const fs = require("fs");
   const src = fs.readFileSync(__dirname + "/../chips/manifest.js", "utf8");
   const files = (src.match(/"([^"]+)"/g) || []).map(s => s.slice(1, -1));
-  assert.strictEqual(files.length, 44);
+  assert.strictEqual(files.length, 45);
   const defs = files.map(f => require(__dirname + "/../" + f));
   const chips = Loader.buildChips(defs.map((d, i) => ({ file: "chips/x" + i + ".js", def: d })), Model);
   assert.ok(chips.every(c => c.ok), JSON.stringify(chips.map(c => c.reason)));
-  assert.strictEqual(new Set(chips.map(c => c.chipId)).size, 44);
+  assert.strictEqual(new Set(chips.map(c => c.chipId)).size, 45);
 });
 
-t("manifest：44 份数据文件按清单顺序，文件均存在", () => {
+t("manifest：45 份数据文件按清单顺序，文件均存在", () => {
   const fs = require("fs");
   const src = fs.readFileSync(__dirname + "/../chips/manifest.js", "utf8");
   const m = src.match(/\[([^\]]*)\]/);
@@ -1819,7 +1819,8 @@ t("manifest：44 份数据文件按清单顺序，文件均存在", () => {
     "chips/wch-ch32v208gbu6-qfn28.js",
     "chips/wch-ch32v208cbu6-qfn48.js",
     "chips/wch-ch32v208rbt6-lqfp64m.js",
-    "chips/wch-ch32v208wbu6-qfn68.js"
+    "chips/wch-ch32v208wbu6-qfn68.js",
+    "chips/gd-gd32f503ret6-lqfp64.js"
   ]);
   files.forEach(f => assert.ok(fs.existsSync(__dirname + "/../" + f), f + " 应存在"));
 });
@@ -2646,6 +2647,66 @@ t("CH582F 数据锁：pins/resources/configs 由 CH582M + QFN28 事实表机械�
   // 封装参数（审计值，含页码结论）
   assert.deepStrictEqual(CHIPF.package, { family: "quad", style: "no-lead", pinsPerSide: 7, pitch: 0.4,
                                           body: [4, 4], pin1: "topLeft", sequence: "ccw-down", thermalPad: "GND (EP)" });
+});
+
+console.log("\n=== GD32F503RET6 ===");
+const GD32F503 = require("../chips/gd-gd32f503ret6-lqfp64.js");
+
+t("GD32F503RET6：LQFP64，51 IO，5 UART / 3 SPI / 2 I2S / 2 I2C / 2 CAN / 3 ADC", () => {
+  assert.strictEqual(GD32F503.id, "gd32f503ret6-lqfp64");
+  assert.strictEqual(GD32F503.chip.vendor, "GigaDevice");
+  assert.strictEqual(GD32F503.chip.series, "GD32F5xx");
+  assert.strictEqual(GD32F503.chip.name, "GD32F503RET6");
+  assert.strictEqual(GD32F503.chip.package, "LQFP64");
+  assert.strictEqual(GD32F503.package.family, "quad");
+  assert.strictEqual(GD32F503.package.pinsPerSide, 16);
+  assert.deepStrictEqual(GD32F503.package.body, [10, 10]);
+  assert.strictEqual(GD32F503.package.pitch, 0.5);
+  assert.strictEqual(GD32F503.pins.length, 64);
+  const v = Model.validateChip(GD32F503);
+  assert.strictEqual(v.ok, true, JSON.stringify(v.errors));
+  assert.strictEqual(Avail.countIO(GD32F503, Avail.defaultState(GD32F503)).total, 51);
+  const byCat = c => GD32F503.resources.filter(r => r.category === c).length;
+  assert.strictEqual(byCat("UART"), 5);
+  assert.strictEqual(byCat("SPI"), 3);
+  assert.strictEqual(byCat("I2S"), 2);
+  assert.strictEqual(byCat("I2C"), 2);
+  assert.strictEqual(byCat("CAN"), 2);
+  assert.strictEqual(byCat("ADC"), 3);
+  const ids = GD32F503.resources.map(r => r.id);
+  ["USART0", "USART1", "USART2", "UART3", "UART4", "SPI0", "SPI1", "SPI2", "I2S1", "I2S2",
+   "I2C0", "I2C1", "CAN0", "CAN1", "USBFS", "TIMER0", "TIMER7", "ADC0", "ADC1", "ADC2",
+   "DAC0", "CMP0", "EXMC", "TRIGSEL"].forEach(x => assert.ok(ids.includes(x), x));
+  assert.deepStrictEqual(GD32F503.globalConfigs.map(c => c.id),
+                         ["debug_common", "jtag_data", "jtag_njtrst", "hxtal", "lxtal"]);
+  assert.strictEqual(GD32F503.pins.find(p => p.name === "BOOT0").type, "power");
+  assert.strictEqual(GD32F503.pins.find(p => p.name === "NRST").type, "power");
+  assert.deepStrictEqual(GD32F503.pins.find(p => p.name === "PD0").alts,
+                         ["OSCIN", "CAN0_RX", "EXMC_D2", "EVENTOUT"]);
+  const u1 = GD32F503.resources.find(r => r.id === "USART1");
+  assert.deepStrictEqual(u1.signals.find(s => s.name === "TXD").pins, ["PA2"]);
+  assert.deepStrictEqual(u1.signals.find(s => s.name === "RXD").pins, ["PA3"]);
+  const adc1 = GD32F503.resources.find(r => r.id === "ADC1");
+  assert.deepStrictEqual(adc1.signals.find(s => s.name === "IN16").pins, ["PB10"]);
+  assert.deepStrictEqual(adc1.signals.find(s => s.name === "IN17").pins, ["PB11"]);
+});
+
+t("GD32F503RET6：USART0 的 TXD/RXD 各有两个落脚点，PB6 是普通第二落脚点", () => {
+  const u0 = GD32F503.resources.find(r => r.id === "USART0");
+  assert.deepStrictEqual(u0.signals.find(s => s.name === "TXD").pins, ["PA9", "PB6"]);
+  assert.deepStrictEqual(u0.signals.find(s => s.name === "RXD").pins, ["PA10", "PB7"]);
+  const opts = Avail.pinOptions(GD32F503, Avail.defaultState(GD32F503), "PB6");
+  const tx = opts.find(o => o.rid === "USART0" && o.signal === "TXD");
+  assert.ok(tx);
+  assert.strictEqual(tx.label, "USART0 · TXD");
+  const rxOpts = Avail.pinOptions(GD32F503, Avail.defaultState(GD32F503), "PB7");
+  const rx = rxOpts.find(o => o.rid === "USART0" && o.signal === "RXD");
+  assert.ok(rx);
+  assert.strictEqual(rx.label, "USART0 · RXD");
+  // USART1 在 LQFP64 上只有 PA2/PA3；PD5/PD6 未引出
+  const u1 = GD32F503.resources.find(r => r.id === "USART1");
+  assert.deepStrictEqual(u1.signals.find(s => s.name === "TXD").pins, ["PA2"]);
+  assert.deepStrictEqual(u1.signals.find(s => s.name === "RXD").pins, ["PA3"]);
 });
 
 console.log("\n" + pass + " passed, " + fail + " failed");

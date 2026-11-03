@@ -43,5 +43,6 @@ window.CHIP_MANIFEST = [
   "chips/wch-ch32v208gbu6-qfn28.js",
   "chips/wch-ch32v208cbu6-qfn48.js",
   "chips/wch-ch32v208rbt6-lqfp64m.js",
-  "chips/wch-ch32v208wbu6-qfn68.js"
+  "chips/wch-ch32v208wbu6-qfn68.js",
+  "chips/gd-gd32f503ret6-lqfp64.js"
 ];

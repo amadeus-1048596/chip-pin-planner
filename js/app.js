@@ -413,8 +413,23 @@
       var pinHtml;
       if (pinKeys.length) {
         pinHtml = pinKeys.map(function (s) {
+          var sigDef = (res.signals || []).find(function (x) { return x.name === s; });
+          var pinSel = "";
+          if (sigDef && sigDef.pins.length > 1 && !res.groupSwitch && !res.groupKey) {
+            var opts = CPP.Availability.signalOptions(def, state(), rid, s).map(function (o) {
+              return "<option value='" + o.pin + "'" + (o.pin === asgPins[s] ? " selected" : "") +
+                     (o.ok ? "" : " disabled") +
+                     (o.reason ? " title='" + CPP.Util.escapeHtml(o.reason) + "'" : "") + ">" +
+                     o.pin + (o.ok ? "" : "（不可用）") + "</option>";
+            }).join("");
+            if (opts) {
+              pinSel = " <select class='mini pin-sel' data-pin-sel=\"" + rid + "|" + s +
+                       "\" title='切换落脚点'>" + opts + "</select>";
+            }
+          }
           return "<span class='sig-name' data-name=\"" + rid + "|" + s + "\" title='点击命名/重命名'>" +
                  s + "=" + asgPins[s] + (asgLabels[s] ? "「" + CPP.Util.escapeHtml(asgLabels[s]) + "」" : "") + "</span>" +
+                 pinSel +
                  (optNameList.indexOf(s) >= 0
                    ? " <button class='mini' data-delsig=\"" + rid + "|" + s + "\" title='移除该可选信号'>×</button>"
                    : "");
@@ -466,6 +481,19 @@
         if (v === null) return;
         commit(CPP.Availability.setSignalLabel(state(), rid2, sig, v.trim()));
         log(rid2 + " " + sig + (v.trim() ? " → 「" + v.trim() + "」" : " 已清除命名"));
+      });
+    });
+    host.querySelectorAll("[data-pin-sel]").forEach(function (sel) {
+      sel.addEventListener("change", function () {
+        var parts = sel.getAttribute("data-pin-sel").split("|");
+        var r = CPP.Availability.setSignal(def, state(), parts[0], parts[1], sel.value);
+        if (r.error) {
+          alert("切换落脚点失败：" + r.error);
+          redraw();
+          return;
+        }
+        commit(r.state);
+        log(parts[0] + " " + parts[1] + " → " + sel.value);
       });
     });
     host.querySelectorAll("[data-switch]").forEach(function (b) {

@@ -36,7 +36,7 @@ Checking pin multiplexing before drawing a schematic is tedious: mux tables, map
 and mode restrictions are scattered across a datasheet. This tool puts that data on the
 package diagram, so you can see what a pin can do and what it conflicts with.
 
-Currently bundled: WCH **CH58x (16)**, **CH59x (11)**, **CH57x (13)** and **CH32V (4)**, 44 chips in total. The data format is vendor-neutral —
+Currently bundled: WCH **CH58x (16)**, **CH59x (11)**, **CH57x (13)**, **CH32V (4)** and GigaDevice **GD32F5xx (1)**, 45 chips in total. The data format is vendor-neutral —
 adding a chip is one data file plus one manifest line. Contributions and chip requests are welcome.
 
 ## Quick start
@@ -49,7 +49,7 @@ Chrome / Edge.
 
 ## 5-minute tour
 
-1. **Pick a chip** from the top-bar dropdown, grouped by vendor/series (currently WCH CH58x with 16 chips, CH59x with 11, CH57x with 13 and CH32V with 4; see the table below).
+1. **Pick a chip** from the top-bar dropdown, grouped by vendor/series (currently WCH CH58x with 16 chips, CH59x with 11, CH57x with 13, CH32V with 4, and GigaDevice GD32F5xx with 1; see the table below).
 2. **Assign pins**, two ways:
    - Click a pin on the package diagram and choose a function. Unavailable options are greyed out with a reason.
 
@@ -57,7 +57,7 @@ Chrome / Edge.
 
    - Or click a peripheral in the left panel to auto-assign; click it again to remove.
 3. **Check conflicts**: occupied pins are coloured; dots in the left panel show availability — 🟢 default pins free, 🟡 default group occupied (the tool will use the alternate group), 🔴 no landing pin.
-4. **Optional signals & modes**: after assigning a peripheral, add MODEM/CS and other optional signals from the right panel; switch host/slave or full/half-duplex for peripherals with modes (e.g. SPI0).
+4. **Optional signals & modes**: after assigning a peripheral, add MODEM/CS and other optional signals from the right panel; switch host/slave or full/half-duplex for peripherals with modes (e.g. SPI0). Signals with multiple landing pins (e.g. GD32 USART0 TXD=PA9/PB6) get a pin dropdown in the right panel.
 5. **Export**: CSV / Markdown pin list, project JSON, or the package diagram as SVG.
 6. **Save your work**: "Save project" downloads a JSON file; loading it switches to the right chip automatically.
 
@@ -111,6 +111,7 @@ Full guide (Chinese): **[docs/user-guide.md](docs/user-guide.md)**.
 | CH32V | CH32V208CBU6 | QFN48 | 35 | 4 UART / 2 SPI / 2 I2C / CAN / 10 ADC/TKey / USBD+USBFS; no ETH (CH32V208DS0 V2.7) |
 | CH32V | CH32V208RBT6 | LQFP64M | 49 | 4 UART / 2 SPI / 2 I2C / CAN / 16 ADC/TKey / USBD+USBFS / 10M ETH (CH32V208DS0 V2.7) |
 | CH32V | CH32V208WBU6 | QFN68 | 53 | 4 UART / 2 SPI / 2 I2C / CAN / 16 ADC/TKey / USBD+USBFS / 10M ETH (CH32V208DS0 V2.7) |
+| GD32F5xx | GD32F503RET6 | LQFP64 | 51 | 5 UART / 3 SPI / 2 I2S / 2 I2C / 2 CAN-FD / 3 ADC / USBFS / EXMC (GD32F503xx Datasheet Rev0.9RC6) |
 
 ![CH582F QFN28](docs/images/ch582f-qfn28.png)
 
@@ -187,7 +188,7 @@ Key design choices:
 ## Development
 
 ```bash
-node tests/engine.test.js   # engine + chip data (252 assertions)
+node tests/engine.test.js   # engine + chip data (254 assertions)
 node tests/fuzz.js          # 8000 random operations + invariants
 node tests/dist.test.js     # release artifacts / zip / installer / update.bat (Windows PowerShell)
 ```
